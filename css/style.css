@@ -1,0 +1,19 @@
+#main {
+    display: inline-block;
+    padding: 10px;
+    margin: 10px;
+    border: 1px solid #666;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    background-color: lightsteelblue;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 10pt;
+
+}
+
+#chart-area {
+    background-color: white;
+    border: 1px solid #666;
+    border-radius: 5px;
+    margin: 10px 10px 0px 10px;
+}
