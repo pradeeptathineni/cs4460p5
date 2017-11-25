@@ -17,3 +17,15 @@
     border-radius: 5px;
     margin: 10px 10px 0px 10px;
 }
+
+.tooltip {
+    opacity: 1;
+}
+
+.tooltip .tooltip-inner {
+    background-color: #999;
+}
+
+.slider-handle.round {
+    background-image: linear-gradient(to bottom,#979797 0,#707070 100%);
+}
