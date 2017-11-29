@@ -14,6 +14,7 @@ $("#yearSlider").on("change", function(event){
 });
 
 var svg = d3.select("svg#chart-area");
+var details = d3.select("svg#details");
 var svgWidth = svg.attr("width");
 var svgHeight = svg.attr("height");
 
@@ -98,9 +99,29 @@ function ready(error, mapData, portData, planeData) {
                 coords = projection([d.Longitude, d.Latitude]);
             }
             return coords[1];
-        });
+        })
+        .on("mouseover", handleMouseOver)
+        .on("mouseout", handleMouseOut);
+
+
+
 }
 
+function handleMouseOver(d, i) {
+    details.attr("id", "#t" + d.Accident_Number).append("rect").attr("x", 0).attr("y", 0).attr("width", 300)
+    .attr("height", 500).style("fill", "#E9E9E9").attr("rx", 15).attr("ry", 15);
+
+    var y = 15;
+    details.append("text").attr("x", 15).attr("y", y).text("Accident Num: " + d.Accident_Number);
+    details.append("text").attr("x", 15).attr("y", 2*y).text("Country: " + d.Country);
+    details.append("text").attr("x", 15).attr("y", 3*y).text("Location: " + d.Location);
+    details.append("text").attr("x", 15).attr("y", 4*y).text("Date: " + d.date);
+    console.log(d);
+    //note Currently it does not remove the element when you move the mouse away     
+}
+function handleMouseOut(d, i) {
+    // d3.select("#t"+d.Accident_Number).remove();
+}
 function updateYear(year) {
 
 }
