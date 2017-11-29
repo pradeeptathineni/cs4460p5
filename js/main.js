@@ -120,6 +120,7 @@ function handleMouseOver(d, i) {
     //note Currently it does not remove the element when you move the mouse away     
 }
 function handleMouseOut(d, i) {
+    details.selectAll("*").remove();
     // d3.select("#t"+d.Accident_Number).remove();
 }
 function updateYear(year) {
