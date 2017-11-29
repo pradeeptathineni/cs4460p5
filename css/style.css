@@ -12,7 +12,7 @@
 }
 
 #chart-area {
-    background-color: white;
+    background-color: #efefef;
     border: 1px solid #666;
     border-radius: 5px;
     margin: 10px 10px 0px 10px;
@@ -28,4 +28,14 @@
 
 .slider-handle.round {
     background-image: linear-gradient(to bottom,#979797 0,#707070 100%);
+}
+
+.country {
+    fill: #cccccc;
+    stroke: #333333;
+    stroke-width: 0.5;
+}
+
+.country:hover {
+    fill: #aaaaaa;
 }

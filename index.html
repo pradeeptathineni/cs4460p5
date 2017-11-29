@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Aircraft Incidents</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/jquery-ui.min.css">
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
@@ -13,7 +14,7 @@
     </div>
     <div style="padding: 4px 60px;">
         <label for="yearSlider" style="margin-right:6px;">1995</label>
-        <input id="yearSlider" type="text" data-slider-min="1995" data-slider-max="2016" data-slider-step="5" data-slider-value="1995" style="width: 800px;"/>
+        <input id="yearSlider" type="text" data-slider-min="1995" data-slider-max="2016" data-slider-step="1" data-slider-value="1995" style="width: 800px;"/>
         <label for="yearSlider"  style="margin-left:6px;">2016</label>
     </div>
 
@@ -22,12 +23,16 @@
         Year Range: <b>€ 10</b> <input id="ex2" type="text" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="5" data-slider-value="[250,450]"/> <b>€ 10000</b>
     </div> -->
 </body>
-<!-- <script src="./js/jquery-3.2.1.min.js"></script> -->
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+<!-- Although not by much, loading is quicker when dependencies are included physically -->
+<!-- We'll need all the speed we can get because this will get laggy for sure -->
+<!-- When you want to include jquery-ui we should download a physical copy -->
+
+<script src="./js/jquery-3.2.1.min.js"></script>
+<script src="./js/jquery-ui.min.js"></script>
 <script src="./js/bootstrap.min.js"></script>
 <script src="./js/d3.min.js"></script>
+<script src="./js/d3-tip.js"></script>
+<script src="./js/topojson.v1.min.js"></script>
 <script src="./js/main.js"></script>
 </html>
