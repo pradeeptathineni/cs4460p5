@@ -61,18 +61,24 @@ function ready(error, mapData, portData, planeData) {
         .translate([svgWidth / 2, svgHeight / 2])
         .scale(fullScale);
 
-    geo.call(d3.zoom().on("zoom", function() {console.log("hi");}));
+    var g = geo.append("g");
+
+    function zoomed() {
+        console.log(d3.event.transform);
+        g.attr("transform", d3.event.transform);
+    }
+    g.call(d3.zoom().on("zoom", zoomed));
 
     var path = d3.geoPath()
         .projection(projection);
 
-    var countries = geo.selectAll(".country")
+    var countries = g.selectAll(".country")
         .data(countries)
         .enter().append("path")
         .attr("class", "country")
         .attr("d", path);
 
-    var dots = geo.selectAll(".incident-dot")
+    var dots = g.selectAll(".incident-dot")
         .data(planeData)
         .enter().append("circle")
         .attr("class", "incident-dot")
