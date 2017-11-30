@@ -11,7 +11,7 @@
 
 }
 
-#chart-area {
+#geo-area, #details-area, #chart-area {
     background-color: #efefef;
     border: 1px solid #666;
     border-radius: 5px;
