@@ -11,32 +11,25 @@
     <div id="main">
         <svg id="geo-area" width="1000" height="640" style="float:left">
         </svg>
-        <svg id="details-area" width="300" height="640" style="">
+        <svg id="details-area" width="310" height="640" style="">
         </svg>
-        <!-- <svg id="chart-area" width="300" height="310" style="">
-        </svg> -->
-    </div>
-    <div style="padding: 4px 60px;">
-        <label for="yearSlider" style="margin-right:6px;">1995</label>
-        <input id="yearSlider" type="text" data-slider-min="1995" data-slider-max="2016" data-slider-step="1" data-slider-value="1995" style="width: 800px;"/>
-        <label for="yearSlider"  style="margin-left:6px;">2016</label>
     </div>
 
-    <!-- when tyring to implmeent a range ish way use span2 like below -->
-    <!-- <div style= "padding: 4px 60px;">
-        Year Range: <b>€ 10</b> <input id="ex2" type="text" class="span2" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="5" data-slider-value="[250,450]"/> <b>€ 10000</b>
-    </div> -->
+    <div id="years-slider">
+        <label for="years-slider" style="margin-top:15px;float:left;">1995</label>
+        <label for="years-slider" style="margin-top:15px;float:right;">2016</label>
+    </div>
+
 </body>
 
-<!-- Although not by much, loading is quicker when dependencies are included physically -->
-<!-- We'll need all the speed we can get because this will get laggy for sure -->
-<!-- When you want to include jquery-ui we should download a physical copy -->
-
-<script src="./js/jquery-3.2.1.min.js"></script>
-<script src="./js/jquery-ui.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!-- <script src="./js/jquery-3.2.1.min.js"></script>
+<script src="./js/jquery-ui.min.js"></script> -->
 <script src="./js/bootstrap.min.js"></script>
 <script src="./js/d3.min.js"></script>
 <script src="./js/d3-tip.js"></script>
+<script src="./js/d3.slider.js"></script>
 <script src="./js/topojson.v1.min.js"></script>
 <script src="./js/main.js"></script>
 </html>

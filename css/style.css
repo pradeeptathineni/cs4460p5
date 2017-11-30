@@ -8,34 +8,34 @@
     text-align: center;
     vertical-align: middle;
     font-size: 10pt;
-
 }
 
 #geo-area, #details-area, #chart-area {
-    background-color: #efefef;
+    background-color: lightsteelblue;
     border: 1px solid #666;
     border-radius: 5px;
     margin: 10px 10px 0px 10px;
 }
 
-.tooltip {
-    opacity: 1;
+#details-area, #chart-area {
+    background-color: #efefef;
 }
 
-.tooltip .tooltip-inner {
-    background-color: #999;
-}
-
-.slider-handle.round {
-    background-image: linear-gradient(to bottom,#979797 0,#707070 100%);
+#years-slider {
+    width: 800px;
+    margin: 20px;
 }
 
 .country {
-    fill: #cccccc;
-    stroke: #333333;
-    stroke-width: 0.5;
+    fill: #efefef;
+    stroke: #cccccc;
+    stroke-width: 1;
 }
 
-.country:hover {
-    fill: #aaaaaa;
+.incident-dot:hover, .active-dot {
+    fill: red;
+}
+
+.info-line {
+    font-family: system-ui;
 }

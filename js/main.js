@@ -1,16 +1,17 @@
-// // Creates a bootstrap-slider element
+var mousePosition;
+var offset = [0,0];
+var div;
+var isDown = false;
 
-// console.log("hello world");
-
-$("#yearSlider").slider({
-    tooltip: "always",
-    tooltip_position: "bottom"
-});
-
-$("#yearSlider").on("change", function(event){
-    // Update the chart on the new value
-    // updateYear(event.value.newValue);
-    console.log("hi");
+$( "#years-slider" ).slider({
+    range: true,
+    min: 1995,
+    max: 2016,
+    step: 1,
+    values: [1995, 2016],
+    slide: function( event, ui ) {
+        console.log(ui);
+    }
 });
 
 var geo = d3.select("svg#geo-area");
@@ -30,8 +31,6 @@ d3.queue()
         row["Coords"] = [+row["Longitude"], +row["Latitude"]];
         return row;
     }).defer(d3.csv, "./data/aircraft_incidents.csv", function(row) {
-        row["Latitude"] = +row["Latitude"];
-        row["Longitude"] = +row["Longitude"];
         row["Total_Fatal_Injuries"] = +row["Total_Fatal_Injuries"];
         row["Total_Serious_Injuries"] = +row["Total_Serious_Injuries"];
         row["Total_Uninjured"] = +row["Total_Uninjured"];
@@ -44,9 +43,14 @@ function ready(error, mapData, portData, planeData) {
         console.error(error);
         return;
     }
+    planeData.forEach(function(d, i) {
+        if (d.Latitude == "" && d.Airport_Code == "") {
+            planeData.splice(i, 1);
+        }
+    });
+    console.log(planeData);
 
     var airports = {};
-
     portData.forEach(function(d) {
         airports[d["Airport_Code"]] = d["Coords"];
     });
@@ -56,6 +60,8 @@ function ready(error, mapData, portData, planeData) {
     var projection = d3.geoMercator()
         .translate([svgWidth / 2, svgHeight / 2])
         .scale(fullScale);
+
+    geo.call(d3.zoom().on("zoom", function() {console.log("hi");}));
 
     var path = d3.geoPath()
         .projection(projection);
@@ -72,52 +78,36 @@ function ready(error, mapData, portData, planeData) {
         .attr("class", "incident-dot")
         .attr("r", 3)
         .attr("cx", function(d) {
-            if (d.Longitude && d.Latitude) {
+            if (d.Longitude != "" && d.Latitude != "") {
                 coords = projection([d.Longitude, d.Latitude]);
-            } else if (d.Airport_Code) {
-                try {
-                    var port = airports[d.Airport_Code];
-                    coords = projection([port[0], port[1]]);
-                } catch (e) {
-                    coords = projection([d.Longitude, d.Latitude]);
-                }
             } else {
                 coords = projection([d.Longitude, d.Latitude]);
             }
             return coords[0];
         }).attr("cy", function(d) {
-            if (d.Longitude && d.Latitude) {
+            if (d.Longitude != "" && d.Latitude != "") {
                 coords = projection([d.Longitude, d.Latitude]);
-            } else if (d.Airport_Code) {
-                try {
-                    var port = airports[d.Airport_Code];
-                    coords = projection([port[0], port[1]]);
-                } catch (e) {
-                    coords = projection([d.Longitude, d.Latitude]);
-                }
             } else {
                 coords = projection([d.Longitude, d.Latitude]);
             }
             return coords[1];
-        })
-        .on("mouseover", incidentMouseover)
-        .on("mouseout", incidentMouseout);
+        }).on("mouseover", incidentMouseover)
+        .on("mouseout", incidentMouseout)
+        .on("click", incidentClick);
 
 }
 
-var interval;
 function incidentMouseover(d, i) {
-    clearInterval(interval);
-    $(".incident-dot").attr("fill", "black");
-    var _this = $(this);
-    _this.attr("fill", "red");
-    // interval = window.setInterval(function() {
-    //     if (_this.attr("fill") == "red") {
-    //         _this.attr("fill", "black");
-    //     } else {
-    //         _this.attr("fill", "red");
-    //     }
-    // }, 1000);
+
+}
+
+function incidentMouseout(d, i) {
+
+}
+
+function incidentClick(d, i) {
+    $(".incident-dot").removeClass("active-dot");
+    $(this).addClass("active-dot");
     details.selectAll("text").remove();
     var y = 25;
     details.append("text")
@@ -204,12 +194,9 @@ function incidentMouseover(d, i) {
         .attr("x", 15)
         .attr("y", 19*y)
         .text("Broad Phase of Flight: " + d.Broad_Phase_of_Flight);
+    details.selectAll("text")
+        .attr("class", "info-line");
 }
-
-function incidentMouseout(d, i) {
-
-}
-
 
 function updateYear(year) {
 
