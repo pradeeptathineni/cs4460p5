@@ -4,7 +4,7 @@
     margin: 10px;
     border: 1px solid #666;
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
-    background-color: lightsteelblue;
+    background-color: #efefef;
     text-align: center;
     vertical-align: middle;
     font-size: 10pt;
@@ -30,6 +30,10 @@
     fill: #efefef;
     stroke: #cccccc;
     stroke-width: 1;
+}
+
+.incident-dot {
+    stroke: black;
 }
 
 .incident-dot:hover, .active-dot {

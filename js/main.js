@@ -62,12 +62,18 @@ function ready(error, mapData, portData, planeData) {
         .scale(fullScale);
 
     var g = geo.append("g");
+    g.append("rect")
+        .attr("width", svgWidth)
+        .attr("height", svgHeight)
+        .attr("fill", "lightsteelblue");
 
     function zoomed() {
-        console.log(d3.event.transform);
-        g.attr("transform", d3.event.transform);
+        g.selectAll("*") // <- didn't know we could do that
+            .attr("transform", d3.event.transform);
     }
-    g.call(d3.zoom().on("zoom", zoomed));
+    g.call(d3.zoom()
+        .scaleExtent([1, 16])
+        .on("zoom", zoomed));
 
     var path = d3.geoPath()
         .projection(projection);
@@ -82,7 +88,7 @@ function ready(error, mapData, portData, planeData) {
         .data(planeData)
         .enter().append("circle")
         .attr("class", "incident-dot")
-        .attr("r", 3)
+        .attr("r", 2)
         .attr("cx", function(d) {
             if (d.Longitude != "" && d.Latitude != "") {
                 coords = projection([d.Longitude, d.Latitude]);
