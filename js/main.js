@@ -69,29 +69,28 @@ function ready(error, mapData, portData, planeData) {
         .attr("height", svgHeight)
         .attr("fill", "lightsteelblue");
 
+    var maxZoom = 30;
+    var maxRadius = 4;
     function zoomed() {
         var evt = d3.event.transform;
         g.selectAll("*")
             .attr("transform", evt);
 
-        var radius = d3.scaleLinear()
-            .domain([1,16])
-            .range([3,0.2]);
+        var radius = d3.scaleLog()
+            .domain([1,maxZoom])
+            .range([maxRadius,0.3]);
 
-        var strokeWeight = d3.scaleLinear()
-            .domain([1,16])
-            .range([1,0]);
+        var fillOpacity = d3.scaleLinear()
+            .domain([1,maxZoom])
+            .range([0.5,1]);
 
-        var fill = d3.scaleLinear()
-            .domain([1,16])
-            .range([0,1]);
-
-        // console.log(radius(evt.k),strokeWeight(evt.k),fill(evt.k));
+        console.log(evt.k, radius(evt.k),fillOpacity(evt.k));
         g.selectAll(".incident-dot")
-            .attr("r", radius(evt.k));
+            .attr("r", radius(evt.k))
+            .attr("fill-opacity", fillOpacity(evt.k));
     }
     g.call(d3.zoom()
-        .scaleExtent([1, 16])
+        .scaleExtent([1, maxZoom])
         .on("zoom", zoomed));
 
     g.call(brush);
@@ -109,7 +108,7 @@ function ready(error, mapData, portData, planeData) {
         .data(planeData)
         .enter().append("circle")
         .attr("class", "incident-dot")
-        .attr("r", 3)
+        .attr("r", maxRadius)
         .attr("cx", function(d) {
             if (d.Longitude != "" && d.Latitude != "") {
                 coords = projection([d.Longitude, d.Latitude]);
@@ -206,10 +205,13 @@ function incidentClick(d, i) {
     $(this).addClass("active-dot");
     details.selectAll("text").remove();
     var y = 25;
-    details.append("text")
+    details.append("a")
+        .attr("target", "_blank")
+        .attr("href", "https://www.google.com/search?q=ntsb%20" + d.Accident_Number)
+        .append("text")
         .attr("x", 15)
         .attr("y", y)
-        .text("Accident Number: " + d.Accident_Number);
+        .text("Accident Number: " + d.Accident_Number + " ⇗");
     details.append("text")
         .attr("x", 15)
         .attr("y", 2*y)
@@ -241,11 +243,13 @@ function incidentClick(d, i) {
     details.append("text")
         .attr("x", 15)
         .attr("y", 9*y)
+        .attr("fill", "severity-text")
         .attr("fill", "red")
         .text("Injury Severity: " + d.Injury_Severity);
     details.append("text")
         .attr("x", 15)
         .attr("y", 10*y)
+        .attr("fill", "severity-text")
         .attr("fill", "red")
         .text("Aircraft Damage: " + d.Aircraft_Damage);
     details.append("text")
