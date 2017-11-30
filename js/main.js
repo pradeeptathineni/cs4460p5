@@ -69,8 +69,9 @@ function ready(error, mapData, portData, planeData) {
         .attr("height", svgHeight)
         .attr("fill", "lightsteelblue");
 
-    var maxZoom = 30;
+    var maxZoom = 20;
     var maxRadius = 4;
+    var minStrokeWidth = 0.05;
     function zoomed() {
         var evt = d3.event.transform;
         g.selectAll("*")
