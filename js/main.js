@@ -9,15 +9,12 @@ var geoHeight = svgHeight - margin.top - margin.bottom;
 
 var fullScale = svgWidth / 2 / Math.PI;
 
-$("#yearSlider").slider({
+$("#years-slider").slider({
     tooltip: "always",
     tooltip_position: "bottom"
 });
 
-$("#yearSlider").on("change", function(event, value){
-    // Update the chart on the new value
-    // updateYear(event.value.newValue);
-    //console.log(event.value.newValue[0],event.value.newValue[1]);
+$("#years-slider").on("change", function(event, value){
     updateYear(event.value.newValue[0],event.value.newValue[1])
 });
 
@@ -51,7 +48,6 @@ function ready(error, mapData, portData, planeData) {
             planeData.splice(i, 1);
         }
     });
-    console.log(planeData);
 
     var airports = {};
     portData.forEach(function(d) {
@@ -86,7 +82,6 @@ function ready(error, mapData, portData, planeData) {
             .domain([1,maxZoom])
             .range([0.5,1]);
 
-        console.log(evt.k, radius(evt.k),fillOpacity(evt.k));
         g.selectAll(".incident-dot")
             .attr("r", radius(evt.k))
             .attr("fill-opacity", fillOpacity(evt.k));
@@ -302,9 +297,8 @@ function incidentClick(d, i) {
 }
 
 function updateYear(year1, year2) {
-    //svg.selectAll("circle").remove();
-    geo.selectAll().selectAll("circle").filter(function(d){
-        console.log("hi");
+    console.log(year1, year2);
+    geo.select("g").selectAll("circle").filter(function(d){
         var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
         var a = parse.getFullYear();
         if (year1 <= a && a <= year2) {
