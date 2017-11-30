@@ -124,12 +124,48 @@ function handleMouseOver(d, i) {
     details.append("text").attr("x", 10).attr("y", 8*hText).text("Make: " + d.Make);
     details.append("text").attr("x", 10).attr("y", 9*hText).text("Model: " + d.Model);
     details.append("text").attr("x", 10).attr("y", 10*hText).text("Carrier: " + d.Air_Carrier);
-    if (d.Broad_Phase_of_Flight == ""){
-            details.append("text").attr("x", 11).attr("y", 11*hText).text("Phase of Flight: NOPE" + d.Broad_Phase_of_Flight);        
+    if (d.Broad_Phase_of_Flight == "" || d.Broad_Phase_of_Flight == "UNKNOWN" || d.Broad_Phase_of_Flight == "OTHER" || d.Broad_Phase_of_Flight == "MANEUVERING"){
+        details.append("text").attr("x", 11).attr("y", 11*hText).text("Phase of Flight: N/A");        
+        details.append("svg:image")
+            .attr('x', 10)
+            .attr('y', 11.5*hText)
+            .attr('width', 144)
+            .attr('height', 121)
+            .attr("xlink:href", "resources/phase/idk.png")
     } else {
-            details.append("text").attr("x", 11).attr("y", 11*hText).text("Phase of Flight: " + d.Broad_Phase_of_Flight);
-    }
+        details.append("text").attr("x", 11).attr("y", 11*hText).text("Phase of Flight: " + d.Broad_Phase_of_Flight);
+        if (d.Broad_Phase_of_Flight == "STANDING") { //stand
+            details.append("svg:image")
+                .attr('x', 10)
+                .attr('y', 11.5*hText)
+                .attr('width', 144)
+                .attr('height', 121)
+                .attr("xlink:href", "resources/phase/stand.png")
+        } else if (d.Broad_Phase_of_Flight == "TAKEOFF" || d.Broad_Phase_of_Flight == "CLIMB") { //up
+            details.append("svg:image")
+                .attr('x', 10)
+                .attr('y', 11.5*hText)
+                .attr('width', 144)
+                .attr('height', 121)
+                .attr("xlink:href", "resources/phase/up.png")
+        } else if (d.Broad_Phase_of_Flight == "CRUISE") { //cruise
+            details.append("svg:image")
+                .attr('x', 10)
+                .attr('y', 11.5*hText)
+                .attr('width', 144)
+                .attr('height', 121)
+                .attr("xlink:href", "resources/phase/cruise.png")
+        } else if (d.Broad_Phase_of_Flight == "TAXI" || d.Broad_Phase_of_Flight == "LANDING" || d.Broad_Phase_of_Flight == "DECENT" || d.Broad_Phase_of_Flight == "APPROACH") { //down
+            details.append("svg:image")
+                .attr('x', 10)
+                .attr('y', 11.5*hText)
+                .attr('width', 144)
+                .attr('height', 121)
+                .attr("xlink:href", "resources/phase/down.png")
+        }
 
+    }
+    
 
 
     //pics of plane and weather
@@ -150,8 +186,7 @@ function updateYear(year1, year2) {
         if (year1 <= a && a <= year2) {
             return true;
         }
-    })
-    .attr("fill-opacity", 1);
+    }).attr("fill-opacity", 1);
 
     svg.selectAll("circle").filter(function(d){
         var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
@@ -159,6 +194,5 @@ function updateYear(year1, year2) {
         if (!(year1 <= a && a <= year2)) {
             return true;
         }
-    })
-    .attr("fill-opacity", .3);
+    }).attr("fill-opacity", .2);
 }
