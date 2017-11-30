@@ -33,7 +33,8 @@
 }
 
 .incident-dot {
-    stroke: black;
+    fill: black;
+    fill-opacity: 0.3;
 }
 
 .incident-dot:hover, .active-dot {
