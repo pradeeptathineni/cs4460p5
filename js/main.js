@@ -9,15 +9,16 @@ var geoHeight = svgHeight - margin.top - margin.bottom;
 
 var fullScale = svgWidth / 2 / Math.PI;
 
-$( "#years-slider" ).slider({
-    range: true,
-    min: 1995,
-    max: 2016,
-    step: 1,
-    values: [1995, 2016],
-    slide: function( event, ui ) {
-        console.log(ui);
-    }
+$("#yearSlider").slider({
+    tooltip: "always",
+    tooltip_position: "bottom"
+});
+
+$("#yearSlider").on("change", function(event, value){
+    // Update the chart on the new value
+    // updateYear(event.value.newValue);
+    //console.log(event.value.newValue[0],event.value.newValue[1]);
+    updateYear(event.value.newValue[0],event.value.newValue[1])
 });
 
 var brush = d3.brush()
@@ -128,6 +129,7 @@ function ready(error, mapData, portData, planeData) {
         .on("mouseout", incidentMouseout)
         .on("click", incidentClick);
 
+        //updateYear(1995, 2016);
 }
 
 function incidentMouseover(d, i) {
@@ -301,7 +303,8 @@ function incidentClick(d, i) {
 
 function updateYear(year1, year2) {
     //svg.selectAll("circle").remove();
-    svg.selectAll("circle").filter(function(d){
+    geo.selectAll().selectAll("circle").filter(function(d){
+        console.log("hi");
         var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
         var a = parse.getFullYear();
         if (year1 <= a && a <= year2) {
@@ -309,7 +312,7 @@ function updateYear(year1, year2) {
         }
     }).attr("fill-opacity", 1);
 
-    svg.selectAll("circle").filter(function(d){
+    geo.select("g").selectAll("circle").filter(function(d){
         var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
         var a = parse.getFullYear();
         if (!(year1 <= a && a <= year2)) {
