@@ -15,7 +15,7 @@ var airports_ICAO = {};
 $("#years-slider").slider({
     tooltip: "always",
     tooltip_position: "bottom",
-    
+
 });
 
 $("#years-slider").on("change", function(event, value){
@@ -371,7 +371,7 @@ function updateYear(year1, year2) {
             if (year1 <= a && a <= year2) {
                 return true;
             }
-        }).attr("visibility", "visible");
+        }).attr("display", "inline");
 
     geo.select("g")
         .selectAll("circle.incident-dot")
@@ -381,7 +381,7 @@ function updateYear(year1, year2) {
             if (!(year1 <= a && a <= year2)) {
                 return true;
             }
-        }).attr("visibility", "hidden");
+        }).attr("display", "none");
 }
 
 function brushstart(cell) {
