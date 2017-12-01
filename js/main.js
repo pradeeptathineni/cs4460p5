@@ -106,13 +106,7 @@ function ready(error, mapData, portData, planeData) {
         .enter().append("circle")
         .attr("class", "incident-dot")
         .attr("fill", function(d) {
-            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
-                return "blue";
-            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
-                return "orange";
-            } else {
-                return "red";
-            }
+            return getColor(d);
         })
         .attr("r", maxRadius)
         .attr("cx", function(d) {
@@ -230,13 +224,7 @@ function incidentClick(d, i) {
         .attr("x", 15)
         .attr("y", 9*y)
         .attr("fill", function() {
-            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
-                return "blue";
-            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
-                return "orange";
-            } else {
-                return "red";
-            }
+            return getColor(d);
         })
         .attr("opacity", function() {
             return (d.Injury_Severity != "") ? 1 : 0.3;
@@ -246,13 +234,7 @@ function incidentClick(d, i) {
         .attr("x", 15)
         .attr("y", 10*y)
         .attr("fill", function() {
-            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
-                return "blue";
-            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
-                return "orange";
-            } else {
-                return "red";
-            }
+            return getColor(d);
         })
         .attr("opacity", function() {
             return (d.Aircraft_Damage != "") ? 1 : 0.3;
@@ -262,13 +244,7 @@ function incidentClick(d, i) {
         .attr("x", 15)
         .attr("y", 11*y)
         .attr("fill", function() {
-            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
-                return "blue";
-            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
-                return "orange";
-            } else {
-                return "red";
-            }
+            return getColor(d);
         })
         .attr("opacity", function() {
             return (d.Make != "") ? 1 : 0.3;
@@ -278,13 +254,7 @@ function incidentClick(d, i) {
         .attr("x", 15)
         .attr("y", 12*y)
         .attr("fill", function() {
-            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
-                return "blue";
-            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
-                return "orange";
-            } else {
-                return "red";
-            }
+            return getColor(d);
         })
         .attr("opacity", function() {
             return (d.Model != "") ? 1 : 0.3;
@@ -294,13 +264,7 @@ function incidentClick(d, i) {
         .attr("x", 15)
         .attr("y", 13*y)
         .attr("fill", function() {
-            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
-                return "blue";
-            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
-                return "orange";
-            } else {
-                return "red";
-            }
+            return getColor(d);
         })
         .attr("opacity", function() {
             return (d.Air_Carrier != "") ? 1 : 0.3;
@@ -310,39 +274,21 @@ function incidentClick(d, i) {
         .attr("x", 15)
         .attr("y", 14*y)
         .attr("fill", function() {
-            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
-                return "blue";
-            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
-                return "orange";
-            } else {
-                return "red";
-            }
+            return getColor(d);
         })
         .text("Total Fatal Injuries: " + d.Total_Fatal_Injuries);
     details.append("text")
         .attr("x", 15)
         .attr("y", 15*y)
         .attr("fill", function() {
-            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
-                return "blue";
-            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
-                return "orange";
-            } else {
-                return "red";
-            }
+            return getColor(d);
         })
         .text("Total Serious Injuries: " + d.Total_Serious_Injuries);
     details.append("text")
         .attr("x", 15)
         .attr("y", 16*y)
         .attr("fill", function() {
-            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
-                return "blue";
-            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
-                return "orange";
-            } else {
-                return "red";
-            }
+            return getColor(d);
         })
         .text("Total Uninjured: " + d.Total_Uninjured);
     details.append("text")
@@ -415,7 +361,7 @@ function incidentClick(d, i) {
     }
 
     //pie legend
-    var valueColors = ["red","orange","blue"];
+    var valueColors = ["red","orange","green"];
     for (i = 0; i < valueColors.length; i++) {
         details.append("rect")
             .attr("x", 58)
@@ -462,7 +408,7 @@ function incidentClick(d, i) {
         return valueColors[i];
         }).attr("transform", "translate(220,"+(25.5*y + 20*valueColors.length)+")");
 
-    $(this).remove();
+    //$(this).remove(); //this removes the dot when you click it. we dont want that.
 } // end incidentClick()
 
 function updateYear(year1, year2) {
@@ -484,3 +430,13 @@ function updateYear(year1, year2) {
             }
         }).attr("display", "none");
 } // end updateYear()
+
+function getColor(d) {
+    if (d.Total_Fatal_Injuries >= d.Total_Serious_Injuries && d.Total_Fatal_Injuries >=d.Total_Uninjured) {
+        return "red";
+    } else if (d.Total_Serious_Injuries >= d.Total_Uninjured && d.Total_Serious_Injuries >= d.Total_Fatal_Injuries) {
+        return "orange";
+    } else {
+        return "green";
+    }
+}
