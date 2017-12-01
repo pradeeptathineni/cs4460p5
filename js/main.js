@@ -9,6 +9,9 @@ var geoHeight = svgHeight - margin.top - margin.bottom;
 
 var fullScale = svgWidth / 2 / Math.PI;
 
+var airports_IATA = {};
+var airports_ICAO = {};
+
 $("#years-slider").slider({
     tooltip: "always",
     tooltip_position: "bottom"
@@ -27,7 +30,7 @@ var brush = d3.brush()
 
 d3.queue()
     .defer(d3.json, "./data/countries.topojson")
-    .defer(d3.csv, "./data/airport_codes.csv", function(row) {
+    .defer(d3.csv, "./data/airports.csv", function(row) {
         row["Coords"] = [+row["Longitude"], +row["Latitude"]];
         return row;
     }).defer(d3.csv, "./data/aircraft_incidents.csv", function(row) {
@@ -43,16 +46,26 @@ function ready(error, mapData, portData, planeData) {
         console.error(error);
         return;
     }
+
+    portData.forEach(function(d) {
+        airports_IATA[d["IATA_Code"]] = d["Coords"];
+        airports_ICAO[d["ICAO_Code"]] = d["Coords"];
+    });
+
+    var usefulPlaneData = [];
     planeData.forEach(function(d, i) {
-        if (d.Latitude == "" && d.Airport_Code == "") {
-            planeData.splice(i, 1);
+        if ((d.Longitude != "" && d.Latitude != "")) {
+            if (d.Longitude != "0" && d.Latitude != "0") {
+                usefulPlaneData.push(d);
+            }
+        } else if (d.Airport_code != "") {
+            if (airports_IATA[d.Airport_code] || airports_ICAO[d.Airport_code]) {
+                usefulPlaneData.push(d);
+            }
         }
     });
 
-    var airports = {};
-    portData.forEach(function(d) {
-        airports[d["Airport_Code"]] = d["Coords"];
-    });
+
 
     var countries = topojson.feature(mapData, mapData.objects.countries).features;
 
@@ -102,20 +115,42 @@ function ready(error, mapData, portData, planeData) {
         .attr("d", path);
 
     var dots = g.selectAll(".incident-dot")
-        .data(planeData)
+        .data(usefulPlaneData)
         .enter().append("circle")
         .attr("class", "incident-dot")
         .attr("r", maxRadius)
         .attr("cx", function(d) {
+            var coords;
             if (d.Longitude != "" && d.Latitude != "") {
                 coords = projection([d.Longitude, d.Latitude]);
+            } else if (d.Airport_Code != "") {
+                if (airports_IATA[d.Airport_Code]) {
+                    var port = airports_IATA[d.Airport_Code];
+                    coords = projection([port[0], port[1]]);
+                } else if (airports_ICAO[d.Airport_Code]) {
+                    var port = airports_ICAO[d.Airport_Code];
+                    coords = projection([port[0], port[1]]);
+                } else {
+                    coords = projection([d.Longitude, d.Latitude]);
+                }
             } else {
                 coords = projection([d.Longitude, d.Latitude]);
             }
             return coords[0];
         }).attr("cy", function(d) {
+            var coords;
             if (d.Longitude != "" && d.Latitude != "") {
                 coords = projection([d.Longitude, d.Latitude]);
+            } else if (d.Airport_Code != "") {
+                if (airports_IATA[d.Airport_Code]) {
+                    var port = airports_IATA[d.Airport_Code];
+                    coords = projection([port[0], port[1]]);
+                } else if (airports_ICAO[d.Airport_Code]) {
+                    var port = airports_ICAO[d.Airport_Code];
+                    coords = projection([port[0], port[1]]);
+                } else {
+                    coords = projection([d.Longitude, d.Latitude]);
+                }
             } else {
                 coords = projection([d.Longitude, d.Latitude]);
             }
@@ -124,7 +159,9 @@ function ready(error, mapData, portData, planeData) {
         .on("mouseout", incidentMouseout)
         .on("click", incidentClick);
 
-        //updateYear(1995, 2016);
+        d3.selectAll("circle")
+            .filter(function(d){return d.Latitude == "" && d.Longitude == "" && d.Airport_Code == "" && d.Airport_Name == ""; })
+            .remove();
 }
 
 function incidentMouseover(d, i) {
