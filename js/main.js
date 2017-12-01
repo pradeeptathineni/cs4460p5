@@ -38,6 +38,9 @@ d3.queue()
         row["Total_Fatal_Injuries"] = +row["Total_Fatal_Injuries"];
         row["Total_Serious_Injuries"] = +row["Total_Serious_Injuries"];
         row["Total_Uninjured"] = +row["Total_Uninjured"];
+        var parse = d3.timeParse("%m/%d/%y")(row.Event_Date);
+        var a = parse.getFullYear();
+        row["Year"] = a;
         return row;
     }).await(ready);
 
@@ -366,9 +369,7 @@ function updateYear(year1, year2) {
     geo.select("g")
         .selectAll("circle")
         .filter(function(d){
-            var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
-            var a = parse.getFullYear();
-            if (year1 <= a && a <= year2) {
+            if (year1 <= d.Year && d.Year <= year2) {
                 return true;
             }
         }).attr("display", "inline");
@@ -376,9 +377,7 @@ function updateYear(year1, year2) {
     geo.select("g")
         .selectAll("circle.incident-dot")
         .filter(function(d){
-            var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
-            var a = parse.getFullYear();
-            if (!(year1 <= a && a <= year2)) {
+            if (!(year1 <= d.Year && d.Year <= year2)) {
                 return true;
             }
         }).attr("display", "none");
