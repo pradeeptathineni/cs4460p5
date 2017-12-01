@@ -26,6 +26,15 @@
     margin: 20px;
 }
 
+.tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.tooltip .tooltip-inner {
+    background-color: #999;
+}
+
 .country {
     fill: #efefef;
     stroke: #cccccc;

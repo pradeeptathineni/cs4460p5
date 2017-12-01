@@ -14,7 +14,8 @@ var airports_ICAO = {};
 
 $("#years-slider").slider({
     tooltip: "always",
-    tooltip_position: "bottom"
+    tooltip_position: "bottom",
+    
 });
 
 $("#years-slider").on("change", function(event, value){
@@ -360,6 +361,8 @@ function incidentClick(d, i) {
 }// end function
 
 function updateYear(year1, year2) {
+    $('.slider-time').html(year1);
+    $('.slider-time2').html(year2);
     geo.select("g")
         .selectAll("circle")
         .filter(function(d){
