@@ -159,69 +159,7 @@ function ready(error, mapData, portData, planeData) {
 }
 
 function incidentMouseover(d, i) {
-    // details.attr("id", "#t" + d.Accident_Number).append("rect").attr("x", 0).attr("y", 0).attr("width", 300)
-    // .attr("height", 500).style("fill", "#E9E9E9").attr("rx", 15).attr("ry", 15);
-    //
-    // details.append("text").attr("x", 10).attr("y", 26).text("Detailed Information")
-    //     .style("text-decoration", "underline").style("font-size", "24px");//attr("font-weight", "bold");
-    // var hText = 15;
-    // details.append("text").attr("x", 10).attr("y", 3*hText).text("Accident Num: " + d.Accident_Number);
-    // details.append("text").attr("x", 10).attr("y", 4*hText).text("Country: " + d.Country);
-    // details.append("text").attr("x", 10).attr("y", 5*hText).text("Location: " + d.Location);
-    // details.append("text").attr("x", 10).attr("y", 6*hText).text("Airport Name: " + d.Airport_Name);
-    // details.append("text").attr("x", 10).attr("y", 7*hText).text("Date: " + d.Event_Date.toString());
-    // details.append("text").attr("x", 10).attr("y", 8*hText).text("Make: " + d.Make);
-    // details.append("text").attr("x", 10).attr("y", 9*hText).text("Model: " + d.Model);
-    // details.append("text").attr("x", 10).attr("y", 10*hText).text("Carrier: " + d.Air_Carrier);
-    // if (d.Broad_Phase_of_Flight == "" || d.Broad_Phase_of_Flight == "UNKNOWN" || d.Broad_Phase_of_Flight == "OTHER" || d.Broad_Phase_of_Flight == "MANEUVERING"){
-    //     details.append("text").attr("x", 11).attr("y", 11*hText).text("Phase of Flight: N/A");
-    //     details.append("svg:image")
-    //         .attr('x', 10)
-    //         .attr('y', 11.5*hText)
-    //         .attr('width', 144)
-    //         .attr('height', 121)
-    //         .attr("xlink:href", "resources/phase/idk.png")
-    // } else {
-    //     details.append("text").attr("x", 11).attr("y", 11*hText).text("Phase of Flight: " + d.Broad_Phase_of_Flight);
-    //     if (d.Broad_Phase_of_Flight == "STANDING") { //stand
-    //         details.append("svg:image")
-    //             .attr('x', 10)
-    //             .attr('y', 11.5*hText)
-    //             .attr('width', 144)
-    //             .attr('height', 121)
-    //             .attr("xlink:href", "resources/phase/stand.png")
-    //     } else if (d.Broad_Phase_of_Flight == "TAKEOFF" || d.Broad_Phase_of_Flight == "CLIMB") { //up
-    //         details.append("svg:image")
-    //             .attr('x', 10)
-    //             .attr('y', 11.5*hText)
-    //             .attr('width', 144)
-    //             .attr('height', 121)
-    //             .attr("xlink:href", "resources/phase/up.png")
-    //     } else if (d.Broad_Phase_of_Flight == "CRUISE") { //cruise
-    //         details.append("svg:image")
-    //             .attr('x', 10)
-    //             .attr('y', 11.5*hText)
-    //             .attr('width', 144)
-    //             .attr('height', 121)
-    //             .attr("xlink:href", "resources/phase/cruise.png")
-    //     } else if (d.Broad_Phase_of_Flight == "TAXI" || d.Broad_Phase_of_Flight == "LANDING" || d.Broad_Phase_of_Flight == "DECENT" || d.Broad_Phase_of_Flight == "APPROACH") { //down
-    //         details.append("svg:image")
-    //             .attr('x', 10)
-    //             .attr('y', 11.5*hText)
-    //             .attr('width', 144)
-    //             .attr('height', 121)
-    //             .attr("xlink:href", "resources/phase/down.png")
-    //     }
-    //
-    // }
 
-
-
-    //pics of plane and weather
-    //pie chart?
-
-    //console.log(d);
-    //note Currently it does not remove the element when you move the mouse away
 }
 
 function incidentMouseout(d, i) {
@@ -333,7 +271,7 @@ function incidentClick(d, i) {
             .attr('y', 20.5*y)
             .attr('width', 144)
             .attr('height', 121)
-            .attr("xlink:href", "resources/idk.png")
+            .attr("xlink:href", "images/idk.png")
     } else {
         details.append("text").attr("x", 11).attr("y", 20*y).text("Phase of Flight: " + d.Broad_Phase_of_Flight);
         if (d.Broad_Phase_of_Flight == "STANDING") { //stand
@@ -342,34 +280,34 @@ function incidentClick(d, i) {
                 .attr('y', 20.5*y)
                 .attr('width', 144)
                 .attr('height', 121)
-                .attr("xlink:href", "resources/stand.png")
+                .attr("xlink:href", "images/stand.png")
         } else if (d.Broad_Phase_of_Flight == "TAKEOFF" || d.Broad_Phase_of_Flight == "CLIMB") { //up
             details.append("svg:image")
                 .attr('x', 10)
                 .attr('y', 20.5*y)
                 .attr('width', 144)
                 .attr('height', 121)
-                .attr("xlink:href", "resources/up.png")
+                .attr("xlink:href", "images/up.png")
         } else if (d.Broad_Phase_of_Flight == "CRUISE") { //cruise
             details.append("svg:image")
                 .attr('x', 10)
                 .attr('y', 20.5*y)
                 .attr('width', 144)
                 .attr('height', 121)
-                .attr("xlink:href", "resources/cruise.png")
+                .attr("xlink:href", "images/cruise.png")
         } else if (d.Broad_Phase_of_Flight == "TAXI" || d.Broad_Phase_of_Flight == "LANDING" || d.Broad_Phase_of_Flight == "DESCENT" || d.Broad_Phase_of_Flight == "APPROACH") { //down
             details.append("svg:image")
                 .attr('x', 10)
                 .attr('y', 20.5*y)
                 .attr('width', 144)
                 .attr('height', 121)
-                .attr("xlink:href", "resources/down.png")
+                .attr("xlink:href", "images/down.png")
         }
     }
 
     //pie legend
     var valueColors = ['#d44951','#fa8873','#fcc9b5'];
-    for (i = 0; i < valueColors.length; i++) { 
+    for (i = 0; i < valueColors.length; i++) {
         details.append("rect")
             .attr("x", 58)
             .attr("y", 27.2*y + i*20)
@@ -383,7 +321,7 @@ function incidentClick(d, i) {
                 string = "Serious";
             } else if (i == 2) {
                 string = "Uninjured";
-            } 
+            }
         details.append("text").attr("transform", "translate(80, "+ (  28*y + 20*i)+")").text(string);
     }
 
@@ -409,7 +347,7 @@ function incidentClick(d, i) {
           { label: 'Uninjured', count: d.Total_Uninjured }
         ];
     }
-    
+
     details.selectAll("path").remove();
     var path = details.selectAll('path')
       .data(pie(pieData))
@@ -422,23 +360,25 @@ function incidentClick(d, i) {
 }// end function
 
 function updateYear(year1, year2) {
-    geo.select("g").selectAll("circle").filter(function(d){
-        var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
-        var a = parse.getFullYear();
-        if (year1 <= a && a <= year2) {
-            return true;
-        }
-    }).attr("visibility", "visible")
-    //.attr("fill-opacity", 1);
+    geo.select("g")
+        .selectAll("circle")
+        .filter(function(d){
+            var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
+            var a = parse.getFullYear();
+            if (year1 <= a && a <= year2) {
+                return true;
+            }
+        }).attr("visibility", "visible");
 
-    geo.select("g").selectAll("circle.incident-dot").filter(function(d){
-        var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
-        var a = parse.getFullYear();
-        if (!(year1 <= a && a <= year2)) {
-            return true;
-        }
-    })
-    .attr("visibility", "hidden");
+    geo.select("g")
+        .selectAll("circle.incident-dot")
+        .filter(function(d){
+            var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
+            var a = parse.getFullYear();
+            if (!(year1 <= a && a <= year2)) {
+                return true;
+            }
+        }).attr("visibility", "hidden");
 }
 
 function brushstart(cell) {
