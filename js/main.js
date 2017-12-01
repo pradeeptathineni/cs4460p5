@@ -304,7 +304,7 @@ function incidentClick(d, i) {
         details.append("text").attr("x", 11).attr("y", 20*y).text("Phase of Flight: N/A");
         details.append("svg:image")
             .attr('x', 10)
-            .attr('y', 20*y)
+            .attr('y', 20.5*y)
             .attr('width', 144)
             .attr('height', 121)
             .attr("xlink:href", "resources/idk.png")
@@ -313,34 +313,87 @@ function incidentClick(d, i) {
         if (d.Broad_Phase_of_Flight == "STANDING") { //stand
             details.append("svg:image")
                 .attr('x', 10)
-                .attr('y', 20*y)
+                .attr('y', 20.5*y)
                 .attr('width', 144)
                 .attr('height', 121)
                 .attr("xlink:href", "resources/stand.png")
         } else if (d.Broad_Phase_of_Flight == "TAKEOFF" || d.Broad_Phase_of_Flight == "CLIMB") { //up
             details.append("svg:image")
                 .attr('x', 10)
-                .attr('y', 20*y)
+                .attr('y', 20.5*y)
                 .attr('width', 144)
                 .attr('height', 121)
                 .attr("xlink:href", "resources/up.png")
         } else if (d.Broad_Phase_of_Flight == "CRUISE") { //cruise
             details.append("svg:image")
                 .attr('x', 10)
-                .attr('y', 20*y)
+                .attr('y', 20.5*y)
                 .attr('width', 144)
                 .attr('height', 121)
                 .attr("xlink:href", "resources/cruise.png")
-        } else if (d.Broad_Phase_of_Flight == "TAXI" || d.Broad_Phase_of_Flight == "LANDING" || d.Broad_Phase_of_Flight == "DECENT" || d.Broad_Phase_of_Flight == "APPROACH") { //down
+        } else if (d.Broad_Phase_of_Flight == "TAXI" || d.Broad_Phase_of_Flight == "LANDING" || d.Broad_Phase_of_Flight == "DESCENT" || d.Broad_Phase_of_Flight == "APPROACH") { //down
             details.append("svg:image")
                 .attr('x', 10)
-                .attr('y', 20*y)
+                .attr('y', 20.5*y)
                 .attr('width', 144)
                 .attr('height', 121)
                 .attr("xlink:href", "resources/down.png")
         }
     }
-}
+
+    //pie legend
+    var valueColors = ['#d44951','#fa8873','#fcc9b5'];
+    for (i = 0; i < valueColors.length; i++) { 
+        details.append("rect")
+            .attr("x", 58)
+            .attr("y", 27.2*y + i*20)
+            .style("fill", valueColors[i])
+            .attr("width", 20)
+            .attr("height", 20);
+            var string = "";
+            if (i == 0) {
+                string = "Fatal";
+            } else if (i == 1) {
+                string = "Serious";
+            } else if (i == 2) {
+                string = "Uninjured";
+            } 
+        details.append("text").attr("transform", "translate(80, "+ (  28*y + 20*i)+")").text(string);
+    }
+
+    //pie
+    var arc = d3.arc().innerRadius(0).outerRadius(60);
+    var pie = d3.pie().value(function(d) { return d.count; }).sort(null);
+
+    // console.log(d.Total_Fatal_Injuries);
+    // console.log(d.Total_Serious_Injuries);
+    // console.log(d.Total_Uninjured);
+    var pieData;
+    if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0 && d.Total_Uninjured == 0) {
+        pieData = [
+          { label: 'Fatal', count: 0},
+          { label: 'Severe', count: 0},
+          { label: 'Uninjured', count: 1}
+        ];
+    } else {
+
+        pieData = [
+          { label: 'Fatal', count: d.Total_Fatal_Injuries},
+          { label: 'Severe', count: d.Total_Serious_Injuries },
+          { label: 'Uninjured', count: d.Total_Uninjured }
+        ];
+    }
+    
+    details.selectAll("path").remove();
+    var path = details.selectAll('path')
+      .data(pie(pieData))
+      .enter()
+      .append('path')
+      .attr('d', arc)
+      .attr('fill', function(d, i) {
+        return valueColors[i];
+      }).attr("transform", "translate(220,"+(25.5*y + 20*valueColors.length)+")");
+}// end function
 
 function updateYear(year1, year2) {
     geo.select("g").selectAll("circle")//.incident-dot")
@@ -351,7 +404,8 @@ function updateYear(year1, year2) {
         if (year1 <= a && a <= year2) {
             return true;
         }
-    }).attr("fill-opacity", 1);
+    }).attr("visibility", "visible")
+    //.attr("fill-opacity", 1);
 
     geo.select("g").selectAll("circle.incident-dot").filter(function(d){
         var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
@@ -359,8 +413,8 @@ function updateYear(year1, year2) {
         if (!(year1 <= a && a <= year2)) {
             return true;
         }
-    })//.attr("fill", "#000000");
-    .attr("fill-opacity", .5);
+    })
+    .attr("visibility", "hidden");
 }
 
 function brushstart(cell) {
