@@ -177,79 +177,97 @@ function incidentClick(d, i) {
         .attr("x", 15)
         .attr("y", y)
         .text("Accident Number: " + d.Accident_Number + " ⇗");
-    if (d.Event_Date != "") {
-        details.append("text")
-            .attr("x", 15)
-            .attr("y", 3*y)
-            .text("Location: " + d.Location);
-    }
-    if (d.Country != "") {
-        details.append("text")
-            .attr("x", 15)
-            .attr("y", 4*y)
-            .text("Country: " + d.Country);
-    }
-    if (d.Latitude != "") {
-        details.append("text")
-            .attr("x", 15)
-            .attr("y", 5*y)
-            .text("Latitude: " + d.Latitude);
-    }
-    if (d.Longitude != "") {
-        details.append("text")
-            .attr("x", 15)
-            .attr("y", 6*y)
-            .text("Longitude: " + d.Longitude);
-    }
-    if (d.Airport_Code != "") {
-        details.append("text")
-            .attr("x", 15)
-            .attr("y", 7*y)
-            .text("Airport Code: " + d.Airport_Code);
-    }
-    if (d.Airport_Name != "") {
-        details.append("text")
-            .attr("x", 15)
-            .attr("y", 8*y)
-            .text("Airport Name: " + d.Airport_Name);
-    }
-    if (d.Injury_Severity != "") {
-        details.append("text")
-            .attr("x", 15)
-            .attr("y", 9*y)
-            .attr("fill", "severity-text")
-            .attr("fill", "red")
-            .text("Injury Severity: " + d.Injury_Severity);
-    }
-    if (d.Aircraft_Damage != "") {
-        details.append("text")
-            .attr("x", 15)
-            .attr("y", 10*y)
-            .attr("fill", "severity-text")
-            .attr("fill", "red")
-            .text("Aircraft Damage: " + d.Aircraft_Damage);
-    }
-    if (d.Make != "") {
-        details.append("text")
-            .attr("x", 15)
-            .attr("y", 11*y)
-            .attr("fill", "red")
-            .text("Make: " + d.Make);
-    }
-    if (d.Model != "") {
-        details.append("text")
-            .attr("x", 15)
-            .attr("y", 12*y)
-            .attr("fill", "red")
-            .text("Model: " + d.Model);
-    }
-    if (d.Air_Carrier != "") {
-        details.append("text")
-            .attr("x", 15)
-            .attr("y", 13*y)
-            .attr("fill", "red")
-            .text("Air_Carrier: " + d.Air_Carrier);
-    }
+    details.append("text")
+        .attr("x", 15)
+        .attr("y", 2*y)
+        .attr("opacity", function() {
+            return (d.Event_Date != "") ? 1 : 0.3;
+        })
+        .text("Event Date: " + d.Event_Date);
+    details.append("text")
+        .attr("x", 15)
+        .attr("y", 3*y)
+        .attr("opacity", function() {
+            return (d.Location != "") ? 1 : 0.3;
+        })
+        .text("Location: " + d.Location);
+    details.append("text")
+        .attr("x", 15)
+        .attr("y", 4*y)
+        .attr("opacity", function() {
+            return (d.Country != "") ? 1 : 0.3;
+        })
+        .text("Country: " + d.Country);
+    details.append("text")
+        .attr("x", 15)
+        .attr("y", 5*y)
+        .attr("opacity", function() {
+            return (d.Latitude != "") ? 1 : 0.3;
+        })
+        .text("Latitude: " + d.Latitude);
+    details.append("text")
+        .attr("x", 15)
+        .attr("y", 6*y)
+        .attr("opacity", function() {
+            return (d.Longitude != "") ? 1 : 0.3;
+        })
+        .text("Longitude: " + d.Longitude);
+    details.append("text")
+        .attr("x", 15)
+        .attr("y", 7*y)
+        .attr("opacity", function() {
+            return (d.Airport_Code != "") ? 1 : 0.3;
+        })
+        .text("Airport Code: " + d.Airport_Code);
+    details.append("text")
+        .attr("x", 15)
+        .attr("y", 8*y)
+        .attr("opacity", function() {
+            return (d.Airport_Name != "") ? 1 : 0.3;
+        })
+        .text("Airport Name: " + d.Airport_Name);
+    details.append("text")
+        .attr("x", 15)
+        .attr("y", 9*y)
+        .attr("fill", "severity-text")
+        .attr("fill", "red")
+        .attr("opacity", function() {
+            return (d.Injury_Severity != "") ? 1 : 0.3;
+        })
+        .text("Injury Severity: " + d.Injury_Severity);
+    details.append("text")
+        .attr("x", 15)
+        .attr("y", 10*y)
+        .attr("fill", "severity-text")
+        .attr("fill", "red")
+        .attr("opacity", function() {
+            return (d.Aircraft_Damage != "") ? 1 : 0.3;
+        })
+        .text("Aircraft Damage: " + d.Aircraft_Damage);
+    details.append("text")
+        .attr("x", 15)
+        .attr("y", 11*y)
+        .attr("fill", "red")
+        .attr("opacity", function() {
+            return (d.Make != "") ? 1 : 0.3;
+        })
+        .text("Make: " + d.Make);
+    details.append("text")
+        .attr("x", 15)
+        .attr("y", 12*y)
+        .attr("fill", "red")
+        .attr("opacity", function() {
+            return (d.Model != "") ? 1 : 0.3;
+        })
+        .text("Model: " + d.Model);
+    details.append("text")
+        .attr("x", 15)
+        .attr("y", 13*y)
+        .attr("fill", "red")
+        .attr("opacity", function() {
+            return (d.Air_Carrier != "") ? 1 : 0.3;
+        })
+        .text("Air_Carrier: " + d.Air_Carrier);
     details.append("text")
         .attr("x", 15)
         .attr("y", 14*y)
@@ -265,30 +283,30 @@ function incidentClick(d, i) {
         .attr("y", 16*y)
         .attr("fill", "red")
         .text("Total Uninjured: " + d.Total_Uninjured);
-    if (d.Schedule != "") {
-        details.append("text")
-            .attr("x", 15)
-            .attr("y", 17*y)
-            .text("Schedule: " + d.Schedule);
-    }
-    var weatherMeaning = ""
-    if (d.Weather_Condition === "UNK" || d.Weather_Condition === "") {
-        weatherMeaning = "unkown";
-        details.append("text")
+    details.append("text")
+        .attr("x", 15)
+        .attr("y", 17*y)
+        .attr("opacity", function() {
+            return (d.Schedule != "") ? 1 : 0.3;
+        })
+        .text("Schedule: " + d.Schedule);
+    details.append("text")
         .attr("x", 15)
         .attr("y", 18*y)
-        .text("Weather Condition: " + weatherMeaning);
-    }  else {
-        if (d.Weather_Condition === "IMC") {
-            weatherMeaning = "cloudy/bad";
-        } else if (d.Weather_Condition === "VMC") {
-            weatherMeaning = "sun/clear";
-        }
-        details.append("text")
-            .attr("x", 15)
-            .attr("y", 18*y)
-            .text("Weather Condition: " + d.Weather_Condition + " (" + weatherMeaning + ")");
-    }
+        .attr("opacity", function() {
+            return (d.Weather_Condition != "" || d.Weather_Condition == "UKN") ? 1 : 0.3;
+        })
+        .text(function() {
+            var weatherMeaning = "";
+            if (d.Weather_Condition === "IMC") {
+                weatherMeaning = d.Weather_Condition + " (cloudy/bad)";
+            } else if (d.Weather_Condition === "VMC") {
+                weatherMeaning = d.Weather_Condition + " (sun/clear)";
+            } else {
+                weatherMeaning = ""
+            }
+            return "Weather Condition: " + weatherMeaning;
+        });
 
     details.selectAll("text")
         .attr("class", "info-line");
