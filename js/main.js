@@ -22,13 +22,6 @@ $("#years-slider").on("change", function(event, value){
     updateYear(event.value.newValue[0],event.value.newValue[1])
 });
 
-var brush = d3.brush()
-    .extent([[0, 0], [svgWidth, svgHeight]])
-    .on("start", brushstart)
-    .on("brush", brushmove)
-    .on("end", brushend);
-
-
 d3.queue()
     .defer(d3.json, "./data/countries.topojson")
     .defer(d3.csv, "./data/airports.csv", function(row) {
@@ -57,7 +50,7 @@ function ready(error, mapData, portData, planeData) {
     });
 
     planeData = planeData.filter(function(d) {
-        if ((d.Longitude != "" && d.Latitude != "") || d.Airport_code != "") {
+        if ((d.Longitude != "" && d.Latitude != "") || d.Airport_Code != "") {
             return d;
         }
     });
@@ -99,8 +92,6 @@ function ready(error, mapData, portData, planeData) {
         .scaleExtent([1, maxZoom])
         .on("zoom", zoomed));
 
-    g.call(brush);
-
     var path = d3.geoPath()
         .projection(projection);
 
@@ -114,6 +105,15 @@ function ready(error, mapData, portData, planeData) {
         .data(planeData)
         .enter().append("circle")
         .attr("class", "incident-dot")
+        .attr("fill", function(d) {
+            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
+                return "blue";
+            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
+                return "orange";
+            } else {
+                return "red";
+            }
+        })
         .attr("r", maxRadius)
         .attr("cx", function(d) {
             var coords;
@@ -229,8 +229,15 @@ function incidentClick(d, i) {
     details.append("text")
         .attr("x", 15)
         .attr("y", 9*y)
-        .attr("fill", "severity-text")
-        .attr("fill", "red")
+        .attr("fill", function() {
+            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
+                return "blue";
+            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
+                return "orange";
+            } else {
+                return "red";
+            }
+        })
         .attr("opacity", function() {
             return (d.Injury_Severity != "") ? 1 : 0.3;
         })
@@ -238,8 +245,15 @@ function incidentClick(d, i) {
     details.append("text")
         .attr("x", 15)
         .attr("y", 10*y)
-        .attr("fill", "severity-text")
-        .attr("fill", "red")
+        .attr("fill", function() {
+            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
+                return "blue";
+            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
+                return "orange";
+            } else {
+                return "red";
+            }
+        })
         .attr("opacity", function() {
             return (d.Aircraft_Damage != "") ? 1 : 0.3;
         })
@@ -247,7 +261,15 @@ function incidentClick(d, i) {
     details.append("text")
         .attr("x", 15)
         .attr("y", 11*y)
-        .attr("fill", "red")
+        .attr("fill", function() {
+            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
+                return "blue";
+            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
+                return "orange";
+            } else {
+                return "red";
+            }
+        })
         .attr("opacity", function() {
             return (d.Make != "") ? 1 : 0.3;
         })
@@ -255,7 +277,15 @@ function incidentClick(d, i) {
     details.append("text")
         .attr("x", 15)
         .attr("y", 12*y)
-        .attr("fill", "red")
+        .attr("fill", function() {
+            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
+                return "blue";
+            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
+                return "orange";
+            } else {
+                return "red";
+            }
+        })
         .attr("opacity", function() {
             return (d.Model != "") ? 1 : 0.3;
         })
@@ -263,7 +293,15 @@ function incidentClick(d, i) {
     details.append("text")
         .attr("x", 15)
         .attr("y", 13*y)
-        .attr("fill", "red")
+        .attr("fill", function() {
+            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
+                return "blue";
+            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
+                return "orange";
+            } else {
+                return "red";
+            }
+        })
         .attr("opacity", function() {
             return (d.Air_Carrier != "") ? 1 : 0.3;
         })
@@ -271,17 +309,41 @@ function incidentClick(d, i) {
     details.append("text")
         .attr("x", 15)
         .attr("y", 14*y)
-        .attr("fill", "red")
+        .attr("fill", function() {
+            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
+                return "blue";
+            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
+                return "orange";
+            } else {
+                return "red";
+            }
+        })
         .text("Total Fatal Injuries: " + d.Total_Fatal_Injuries);
     details.append("text")
         .attr("x", 15)
         .attr("y", 15*y)
-        .attr("fill", "red")
+        .attr("fill", function() {
+            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
+                return "blue";
+            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
+                return "orange";
+            } else {
+                return "red";
+            }
+        })
         .text("Total Serious Injuries: " + d.Total_Serious_Injuries);
     details.append("text")
         .attr("x", 15)
         .attr("y", 16*y)
-        .attr("fill", "red")
+        .attr("fill", function() {
+            if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0) {
+                return "blue";
+            } else if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries > 0) {
+                return "orange";
+            } else {
+                return "red";
+            }
+        })
         .text("Total Uninjured: " + d.Total_Uninjured);
     details.append("text")
         .attr("x", 15)
@@ -424,70 +486,4 @@ function updateYear(year1, year2) {
                 return true;
             }
         }).attr("display", "none");
-}
-
-function brushstart(cell) {
-    // cell is the SplomCell object
-
-    // Check if this g element is different than the previous brush
-    if(brushCell !== this) {
-
-        // Clear the old brush
-        brush.move(d3.select(brushCell), null);
-
-        // Update the global scales for the subsequent brushmove events
-        xScale.domain(extentByAttribute[cell.x]);
-        yScale.domain(extentByAttribute[cell.y]);
-
-        // Save the state of this g element as having an active brush
-        brushCell = this;
-    }
-}
-
-function brushmove(cell) {
-    // cell is the SplomCell object
-
-    // Get the extent or bounding box of the brush event, this is a 2x2 array
-    var e = d3.event.selection;
-    if(e) {
-
-        // Select all .dot circles, and add the "hidden" class if the data for that circle
-        // lies outside of the brush-filter applied for this SplomCells x and y attributes
-        geo.selectAll(".dot")
-            .classed("hidden", function(d){
-                return e[0][0] > xScale(d[cell.x]) || xScale(d[cell.x]) > e[1][0]
-                    || e[0][1] > yScale(d[cell.y]) || yScale(d[cell.y]) > e[1][1];
-            });
-
-        // Challenge 1: FILTER ON BRUSH
-        // xScale.domain(extentByAttribute[cell.x]);
-        // yScale.domain(extentByAttribute[cell.y]);
-
-        // var filtered = cars.filter(function(d){
-        //     return (e[0][0] <= xScale(d[cell.x]) && xScale(d[cell.x]) <= e[1][0])
-        //         && ((e[0][1] <= yScale(d[cell.y]) && yScale(d[cell.y]) <= e[1][1]));
-        // });
-
-        // geo.selectAll('.cell')
-        //     .each(function(c){
-        //         c.update(this, filtered);
-        //     });
-    }
-}
-
-function brushend() {
-    // If there is no longer an extent or bounding box then the brush has been removed
-    if(!d3.event.selection) {
-        // Bring back all hidden .dot elements
-        geo.selectAll('.hidden').classed('hidden', false);
-
-        // Challenge 1: FILTER ON BRUSH
-        // geo.selectAll('.cell')
-        //     .each(function(c){
-        //         c.update(this, cars);
-        //     });
-
-        // Return the state of the active brushCell to be undefined
-        brushCell = undefined;
-    }
 }

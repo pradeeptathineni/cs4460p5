@@ -42,16 +42,18 @@
 }
 
 .incident-dot {
-    fill: red;
-    fill-opacity: 0.2;
+    fill-opacity: 0.4;
     stroke: #cccccc;
     stroke-width: 0.1;
 }
 
 .incident-dot:hover, .active-dot {
-    fill: red;
     fill-opacity: 1;
     stroke: black;
+}
+
+.active-dot::after {
+    content: "Selected";
 }
 
 .info-line {
