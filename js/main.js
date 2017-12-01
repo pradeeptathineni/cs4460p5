@@ -177,61 +177,79 @@ function incidentClick(d, i) {
         .attr("x", 15)
         .attr("y", y)
         .text("Accident Number: " + d.Accident_Number + " ⇗");
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 2*y)
-        .text("Event Date: " + d.Event_Date);
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 3*y)
-        .text("Location: " + d.Location);
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 4*y)
-        .text("Country: " + d.Country);
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 5*y)
-        .text("Latitude: " + d.Latitude);
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 6*y)
-        .text("Longitude: " + d.Longitude);
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 7*y)
-        .text("Airport Code: " + d.Airport_Code);
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 8*y)
-        .text("Airport Name: " + d.Airport_Name);
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 9*y)
-        .attr("fill", "severity-text")
-        .attr("fill", "red")
-        .text("Injury Severity: " + d.Injury_Severity);
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 10*y)
-        .attr("fill", "severity-text")
-        .attr("fill", "red")
-        .text("Aircraft Damage: " + d.Aircraft_Damage);
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 11*y)
-        .attr("fill", "red")
-        .text("Make: " + d.Make);
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 12*y)
-        .attr("fill", "red")
-        .text("Model: " + d.Model);
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 13*y)
-        .attr("fill", "red")
-        .text("Air_Carrier: " + d.Air_Carrier);
+    if (d.Event_Date != "") {
+        details.append("text")
+            .attr("x", 15)
+            .attr("y", 3*y)
+            .text("Location: " + d.Location);
+    }
+    if (d.Country != "") {
+        details.append("text")
+            .attr("x", 15)
+            .attr("y", 4*y)
+            .text("Country: " + d.Country);
+    }
+    if (d.Latitude != "") {
+        details.append("text")
+            .attr("x", 15)
+            .attr("y", 5*y)
+            .text("Latitude: " + d.Latitude);
+    }
+    if (d.Longitude != "") {
+        details.append("text")
+            .attr("x", 15)
+            .attr("y", 6*y)
+            .text("Longitude: " + d.Longitude);
+    }
+    if (d.Airport_Code != "") {
+        details.append("text")
+            .attr("x", 15)
+            .attr("y", 7*y)
+            .text("Airport Code: " + d.Airport_Code);
+    }
+    if (d.Airport_Name != "") {
+        details.append("text")
+            .attr("x", 15)
+            .attr("y", 8*y)
+            .text("Airport Name: " + d.Airport_Name);
+    }
+    if (d.Injury_Severity != "") {
+        details.append("text")
+            .attr("x", 15)
+            .attr("y", 9*y)
+            .attr("fill", "severity-text")
+            .attr("fill", "red")
+            .text("Injury Severity: " + d.Injury_Severity);
+    }
+    if (d.Aircraft_Damage != "") {
+        details.append("text")
+            .attr("x", 15)
+            .attr("y", 10*y)
+            .attr("fill", "severity-text")
+            .attr("fill", "red")
+            .text("Aircraft Damage: " + d.Aircraft_Damage);
+    }
+    if (d.Make != "") {
+        details.append("text")
+            .attr("x", 15)
+            .attr("y", 11*y)
+            .attr("fill", "red")
+            .text("Make: " + d.Make);
+    }
+    if (d.Model != "") {
+        details.append("text")
+            .attr("x", 15)
+            .attr("y", 12*y)
+            .attr("fill", "red")
+            .text("Model: " + d.Model);
+    }
+    if (d.Air_Carrier != "") {
+        details.append("text")
+            .attr("x", 15)
+            .attr("y", 13*y)
+            .attr("fill", "red")
+            .text("Air_Carrier: " + d.Air_Carrier);
+    }
     details.append("text")
         .attr("x", 15)
         .attr("y", 14*y)
@@ -247,11 +265,12 @@ function incidentClick(d, i) {
         .attr("y", 16*y)
         .attr("fill", "red")
         .text("Total Uninjured: " + d.Total_Uninjured);
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 17*y)
-        .text("Schedule: " + d.Schedule);
-
+    if (d.Schedule != "") {
+        details.append("text")
+            .attr("x", 15)
+            .attr("y", 17*y)
+            .text("Schedule: " + d.Schedule);
+    }
     var weatherMeaning = ""
     if (d.Weather_Condition === "UNK" || d.Weather_Condition === "") {
         weatherMeaning = "unkown";
@@ -268,12 +287,9 @@ function incidentClick(d, i) {
         details.append("text")
             .attr("x", 15)
             .attr("y", 18*y)
-            .text("Weather Condition: " + d.Weather_Condition + " meaning " + weatherMeaning);
+            .text("Weather Condition: " + d.Weather_Condition + " (" + weatherMeaning + ")");
     }
-    details.append("text")
-        .attr("x", 15)
-        .attr("y", 19*y)
-        .text("Broad Phase of Flight: " + d.Broad_Phase_of_Flight);
+
     details.selectAll("text")
         .attr("class", "info-line");
 
