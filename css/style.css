@@ -40,8 +40,8 @@
 }
 
 .incident-dot:hover, .active-dot {
-    fill: red;
-    fill-opacity: 1;
+    fill: red !important;
+    fill-opacity: 1 !important;
     stroke: black;
 }
 

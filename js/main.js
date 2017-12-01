@@ -12,6 +12,44 @@ var fullScale = svgWidth / 2 / Math.PI;
 var airports_IATA = {};
 var airports_ICAO = {};
 
+var globalPlaneData;
+
+var maxZoom = 20;
+var maxRadius = 4;
+var minStrokeWidth = 0.05;
+
+var radius = d3.scaleLog()
+    .domain([1,maxZoom])
+    .range([maxRadius,0.3]);
+
+var fillOpacity = d3.scaleLinear()
+    .domain([1,maxZoom])
+    .range([0.5,1]);
+
+var g = geo.append("g");
+
+g.append("rect")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight)
+    .attr("fill", "lightsteelblue");
+
+function zoomed() {
+    var evt = d3.event.transform;
+    g.selectAll("*")
+        .attr("transform", evt);
+    g.selectAll(".incident-dot")
+        .attr("r", radius(evt.k))
+        .attr("fill-opacity", fillOpacity(evt.k));
+}
+
+g.call(d3.zoom()
+    .scaleExtent([1, maxZoom])
+    .on("zoom", zoomed));
+
+var projection = d3.geoMercator()
+    .translate([svgWidth / 2, svgHeight / 2])
+    .scale(fullScale);
+
 $("#years-slider").slider({
     tooltip: "always",
     tooltip_position: "bottom"
@@ -20,13 +58,6 @@ $("#years-slider").slider({
 $("#years-slider").on("change", function(event, value){
     updateYear(event.value.newValue[0],event.value.newValue[1])
 });
-
-var brush = d3.brush()
-    .extent([[0, 0], [svgWidth, svgHeight]])
-    .on("start", brushstart)
-    .on("brush", brushmove)
-    .on("end", brushend);
-
 
 d3.queue()
     .defer(d3.json, "./data/countries.topojson")
@@ -64,44 +95,9 @@ function ready(error, mapData, portData, planeData) {
             }
         }
     });
+    globalPlaneData = usefulPlaneData;
 
     var countries = topojson.feature(mapData, mapData.objects.countries).features;
-
-    var projection = d3.geoMercator()
-        .translate([svgWidth / 2, svgHeight / 2])
-        .scale(fullScale);
-
-    var g = geo.append("g");
-    g.append("rect")
-        .attr("width", svgWidth)
-        .attr("height", svgHeight)
-        .attr("fill", "lightsteelblue");
-
-    var maxZoom = 20;
-    var maxRadius = 4;
-    var minStrokeWidth = 0.05;
-    function zoomed() {
-        var evt = d3.event.transform;
-        g.selectAll("*")
-            .attr("transform", evt);
-
-        var radius = d3.scaleLog()
-            .domain([1,maxZoom])
-            .range([maxRadius,0.3]);
-
-        var fillOpacity = d3.scaleLinear()
-            .domain([1,maxZoom])
-            .range([0.5,1]);
-
-        g.selectAll(".incident-dot")
-            .attr("r", radius(evt.k))
-            .attr("fill-opacity", fillOpacity(evt.k));
-    }
-    g.call(d3.zoom()
-        .scaleExtent([1, maxZoom])
-        .on("zoom", zoomed));
-
-    g.call(brush);
 
     var path = d3.geoPath()
         .projection(projection);
@@ -156,6 +152,80 @@ function ready(error, mapData, portData, planeData) {
         }).on("mouseover", incidentMouseover)
         .on("mouseout", incidentMouseout)
         .on("click", incidentClick);
+}
+
+function updateYear(year1, year2) {
+    geo.select("g").selectAll("circle").remove();
+
+    var dots = geo.select("g").selectAll(".incident-dot")
+        .data(globalPlaneData)
+        .enter().append("circle")
+        .filter(function(d) {
+            var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
+            var a = parse.getFullYear();
+            if (year1 <= a && a <= year2) {
+                return true;
+            }
+        }).attr("class", "incident-dot")
+        .attr("r", maxRadius)
+        .attr("cx", function(d) {
+            var coords;
+            if (d.Longitude != "" && d.Latitude != "") {
+                coords = projection([d.Longitude, d.Latitude]);
+            } else if (d.Airport_Code != "") {
+                if (airports_IATA[d.Airport_Code]) {
+                    var port = airports_IATA[d.Airport_Code];
+                    coords = projection([port[0], port[1]]);
+                } else if (airports_ICAO[d.Airport_Code]) {
+                    var port = airports_ICAO[d.Airport_Code];
+                    coords = projection([port[0], port[1]]);
+                } else {
+                    coords = projection([d.Longitude, d.Latitude]);
+                }
+            } else {
+                coords = projection([d.Longitude, d.Latitude]);
+            }
+            return coords[0];
+        }).attr("cy", function(d) {
+            var coords;
+            if (d.Longitude != "" && d.Latitude != "") {
+                coords = projection([d.Longitude, d.Latitude]);
+            } else if (d.Airport_Code != "") {
+                if (airports_IATA[d.Airport_Code]) {
+                    var port = airports_IATA[d.Airport_Code];
+                    coords = projection([port[0], port[1]]);
+                } else if (airports_ICAO[d.Airport_Code]) {
+                    var port = airports_ICAO[d.Airport_Code];
+                    coords = projection([port[0], port[1]]);
+                } else {
+                    coords = projection([d.Longitude, d.Latitude]);
+                }
+            } else {
+                coords = projection([d.Longitude, d.Latitude]);
+            }
+            return coords[1];
+        }).on("mouseover", incidentMouseover)
+        .on("mouseout", incidentMouseout)
+        .on("click", incidentClick);
+    // geo.select("g")
+    //     .selectAll("circle")
+    //     .filter(function(d){
+    //         var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
+    //         var a = parse.getFullYear();
+    //         if (year1 <= a && a <= year2) {
+    //             return true;
+    //         }
+    //     }).attr("visibility", "visible");
+    //
+    // geo.select("g")
+    //     .selectAll("circle")
+    //     .filter(function(d){
+    //         var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
+    //         var a = parse.getFullYear();
+    //         if (!(year1 <= a && a <= year2)) {
+    //             return true;
+    //         }
+    //     }).attr("visibility", "hidden");
 }
 
 function incidentMouseover(d, i) {
@@ -264,47 +334,6 @@ function incidentClick(d, i) {
     details.selectAll("text")
         .attr("class", "info-line");
 
-    if (d.Broad_Phase_of_Flight == "" || d.Broad_Phase_of_Flight == "UNKNOWN" || d.Broad_Phase_of_Flight == "OTHER" || d.Broad_Phase_of_Flight == "MANEUVERING"){
-        details.append("text").attr("x", 11).attr("y", 20*y).text("Phase of Flight: N/A");
-        details.append("svg:image")
-            .attr('x', 10)
-            .attr('y', 20.5*y)
-            .attr('width', 144)
-            .attr('height', 121)
-            .attr("xlink:href", "images/idk.png")
-    } else {
-        details.append("text").attr("x", 11).attr("y", 20*y).text("Phase of Flight: " + d.Broad_Phase_of_Flight);
-        if (d.Broad_Phase_of_Flight == "STANDING") { //stand
-            details.append("svg:image")
-                .attr('x', 10)
-                .attr('y', 20.5*y)
-                .attr('width', 144)
-                .attr('height', 121)
-                .attr("xlink:href", "images/stand.png")
-        } else if (d.Broad_Phase_of_Flight == "TAKEOFF" || d.Broad_Phase_of_Flight == "CLIMB") { //up
-            details.append("svg:image")
-                .attr('x', 10)
-                .attr('y', 20.5*y)
-                .attr('width', 144)
-                .attr('height', 121)
-                .attr("xlink:href", "images/up.png")
-        } else if (d.Broad_Phase_of_Flight == "CRUISE") { //cruise
-            details.append("svg:image")
-                .attr('x', 10)
-                .attr('y', 20.5*y)
-                .attr('width', 144)
-                .attr('height', 121)
-                .attr("xlink:href", "images/cruise.png")
-        } else if (d.Broad_Phase_of_Flight == "TAXI" || d.Broad_Phase_of_Flight == "LANDING" || d.Broad_Phase_of_Flight == "DESCENT" || d.Broad_Phase_of_Flight == "APPROACH") { //down
-            details.append("svg:image")
-                .attr('x', 10)
-                .attr('y', 20.5*y)
-                .attr('width', 144)
-                .attr('height', 121)
-                .attr("xlink:href", "images/down.png")
-        }
-    }
-
     //pie legend
     var valueColors = ['#d44951','#fa8873','#fcc9b5'];
     for (i = 0; i < valueColors.length; i++) {
@@ -350,36 +379,16 @@ function incidentClick(d, i) {
 
     details.selectAll("path").remove();
     var path = details.selectAll('path')
-      .data(pie(pieData))
-      .enter()
-      .append('path')
-      .attr('d', arc)
-      .attr('fill', function(d, i) {
-        return valueColors[i];
-      }).attr("transform", "translate(220,"+(25.5*y + 20*valueColors.length)+")");
+        .data(pie(pieData))
+        .enter()
+        .append('path')
+        .attr('d', arc)
+        .attr('fill', function(d, i) {
+            return valueColors[i];
+        }).attr("transform", "translate(220,"+(25.5*y + 20*valueColors.length)+")");
+    geo.click();
 }// end function
 
-function updateYear(year1, year2) {
-    geo.select("g")
-        .selectAll("circle")
-        .filter(function(d){
-            var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
-            var a = parse.getFullYear();
-            if (year1 <= a && a <= year2) {
-                return true;
-            }
-        }).attr("visibility", "visible");
-
-    geo.select("g")
-        .selectAll("circle.incident-dot")
-        .filter(function(d){
-            var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
-            var a = parse.getFullYear();
-            if (!(year1 <= a && a <= year2)) {
-                return true;
-            }
-        }).attr("visibility", "hidden");
-}
 
 function brushstart(cell) {
     // cell is the SplomCell object
