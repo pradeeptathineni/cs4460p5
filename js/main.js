@@ -154,7 +154,7 @@ function ready(error, mapData, portData, planeData) {
         }).on("mouseover", incidentMouseover)
         .on("mouseout", incidentMouseout)
         .on("click", incidentClick);
-}
+} // end ready()
 
 function incidentMouseover(d, i) {
 
@@ -415,7 +415,7 @@ function incidentClick(d, i) {
     }
 
     //pie legend
-    var valueColors = ['#d44951','#fa8873','#fcc9b5'];
+    var valueColors = ["red","orange","blue"];
     for (i = 0; i < valueColors.length; i++) {
         details.append("rect")
             .attr("x", 58)
@@ -434,39 +434,36 @@ function incidentClick(d, i) {
         details.append("text").attr("transform", "translate(80, "+ (  28*y + 20*i)+")").text(string);
     }
 
-    //pie
     var arc = d3.arc().innerRadius(0).outerRadius(60);
     var pie = d3.pie().value(function(d) { return d.count; }).sort(null);
 
-    // console.log(d.Total_Fatal_Injuries);
-    // console.log(d.Total_Serious_Injuries);
-    // console.log(d.Total_Uninjured);
     var pieData;
     if (d.Total_Fatal_Injuries == 0 && d.Total_Serious_Injuries == 0 && d.Total_Uninjured == 0) {
         pieData = [
-          { label: 'Fatal', count: 0},
-          { label: 'Severe', count: 0},
-          { label: 'Uninjured', count: 1}
+            {label: 'Fatal', count: 0},
+            {label: 'Severe', count: 0},
+            {label: 'Uninjured', count: 1}
         ];
     } else {
-
         pieData = [
-          { label: 'Fatal', count: d.Total_Fatal_Injuries},
-          { label: 'Severe', count: d.Total_Serious_Injuries },
-          { label: 'Uninjured', count: d.Total_Uninjured }
+            {label: 'Fatal', count: d.Total_Fatal_Injuries},
+            {label: 'Severe', count: d.Total_Serious_Injuries},
+            {label: 'Uninjured', count: d.Total_Uninjured}
         ];
     }
 
     details.selectAll("path").remove();
     var path = details.selectAll('path')
-      .data(pie(pieData))
-      .enter()
-      .append('path')
-      .attr('d', arc)
-      .attr('fill', function(d, i) {
+        .data(pie(pieData))
+        .enter()
+        .append('path')
+        .attr('d', arc)
+        .attr('fill', function(d, i) {
         return valueColors[i];
-      }).attr("transform", "translate(220,"+(25.5*y + 20*valueColors.length)+")");
-}// end function
+        }).attr("transform", "translate(220,"+(25.5*y + 20*valueColors.length)+")");
+
+    $(this).remove();
+} // end incidentClick()
 
 function updateYear(year1, year2) {
     $('.slider-time').html(year1);
@@ -486,4 +483,4 @@ function updateYear(year1, year2) {
                 return true;
             }
         }).attr("display", "none");
-}
+} // end updateYear()
