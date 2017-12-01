@@ -56,18 +56,12 @@ function ready(error, mapData, portData, planeData) {
         airports_ICAO[d["ICAO_Code"]] = d["Coords"];
     });
 
-    var usefulPlaneData = [];
-    planeData.forEach(function(d, i) {
-        if ((d.Longitude != "" && d.Latitude != "")) {
-            if (d.Longitude != "0" && d.Latitude != "0") {
-                usefulPlaneData.push(d);
-            }
-        } else if (d.Airport_code != "") {
-            if (airports_IATA[d.Airport_code] || airports_ICAO[d.Airport_code]) {
-                usefulPlaneData.push(d);
-            }
+    planeData = planeData.filter(function(d) {
+        if ((d.Longitude != "" && d.Latitude != "") || d.Airport_code != "") {
+            return d;
         }
     });
+    console.log(planeData);
 
     var countries = topojson.feature(mapData, mapData.objects.countries).features;
 
@@ -117,7 +111,7 @@ function ready(error, mapData, portData, planeData) {
         .attr("d", path);
 
     var dots = g.selectAll(".incident-dot")
-        .data(usefulPlaneData)
+        .data(planeData)
         .enter().append("circle")
         .attr("class", "incident-dot")
         .attr("r", maxRadius)
