@@ -58,7 +58,6 @@ function ready(error, mapData, portData, planeData) {
             return d;
         }
     });
-    console.log(planeData);
 
     var countries = topojson.feature(mapData, mapData.objects.countries).features;
 
@@ -149,6 +148,7 @@ function ready(error, mapData, portData, planeData) {
         }).on("mouseover", incidentMouseover)
         .on("mouseout", incidentMouseout)
         .on("click", incidentClick);
+    console.log("All appended dots:",dots._groups);
 } // end ready()
 
 function incidentMouseover(d, i) {
@@ -167,10 +167,11 @@ function incidentClick(d, i) {
     var y = 20;
     details.append("a")
         .attr("target", "_blank")
-        .attr("href", "https://www.google.com/search?q=ntsb%20" + d.Accident_Number)
+        .attr("href", "https://www.google.com/search?q=NTSB%20" + d.Accident_Number)
         .append("text")
         .attr("x", 15)
         .attr("y", y)
+        .attr("font-weight", "bold")
         .text("Accident Number: " + d.Accident_Number + " ⇗");
     details.append("text")
         .attr("x", 15)
@@ -412,14 +413,6 @@ function incidentClick(d, i) {
     getDotsNearClick();
 } // end incidentClick()
 
-var fisheye = d3.fisheye.circular()
-    .radius(200)
-    .distortion(2);
-
-geo.on("mousemove", function() {
-    fisheye.focus(d3.mouse(this));
-});
-
 function getDotsNearClick() {
     var clicked = $(this);
     var radius = clicked.attr("r");
@@ -438,7 +431,7 @@ function getDotsNearClick() {
                 // then we return d
             }
         });
-    console.log(nearbyDots);
+    console.log("Dots nearby click:", nearbyDots._groups);
 } // end getDotsNearClick()
 
 function updateYear(year1, year2) {
