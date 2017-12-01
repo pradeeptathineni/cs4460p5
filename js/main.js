@@ -12,6 +12,10 @@ var fullScale = svgWidth / 2 / Math.PI;
 var airports_IATA = {};
 var airports_ICAO = {};
 
+var maxZoom = 20;
+var maxRadius = 4;
+var minStrokeWidth = 0.05;
+
 $("#years-slider").slider({
     tooltip: "always",
     tooltip_position: "bottom",
@@ -68,9 +72,6 @@ function ready(error, mapData, portData, planeData) {
         .attr("height", svgHeight)
         .attr("fill", "lightsteelblue");
 
-    var maxZoom = 20;
-    var maxRadius = 4;
-    var minStrokeWidth = 0.05;
     function zoomed() {
         var evt = d3.event.transform;
         g.selectAll("*")
@@ -406,10 +407,39 @@ function incidentClick(d, i) {
         .attr('d', arc)
         .attr('fill', function(d, i) {
         return valueColors[i];
-        }).attr("transform", "translate(220,"+(25.5*y + 20*valueColors.length)+")");
+    }).attr("transform", "translate(220,"+(25.5*y + 20*valueColors.length)+")");
 
-    //$(this).remove(); //this removes the dot when you click it. we dont want that.
+    getDotsNearClick();
 } // end incidentClick()
+
+var fisheye = d3.fisheye.circular()
+    .radius(200)
+    .distortion(2);
+
+geo.on("mousemove", function() {
+    fisheye.focus(d3.mouse(this));
+});
+
+function getDotsNearClick() {
+    var clicked = $(this);
+    var radius = clicked.attr("r");
+    var nearbyDots = geo.select("g")
+        .selectAll("circle.incident-dot")
+        .filter(function(d){
+            if ($(this).attr("display") != "none") {
+                // returning d here gets the non-hidden elements correctly
+                // but the following if statement returns nothing
+                if ((Math.abs($(this).attr("cx") - clicked.attr("cx")) <= 2*radius)
+                        && (Math.abs($(this).attr("cy") - clicked.attr("cy")) <= 2*radius)) {
+                        return d;
+                }
+                // We must check cx and cy against the clicked dot
+                // if absolutevalue(someDot-clickedDotPos) <= clickedDot diameter
+                // then we return d
+            }
+        });
+    console.log(nearbyDots);
+} // end getDotsNearClick()
 
 function updateYear(year1, year2) {
     $('.slider-time').html(year1);
@@ -432,11 +462,15 @@ function updateYear(year1, year2) {
 } // end updateYear()
 
 function getColor(d) {
-    if (d.Total_Fatal_Injuries >= d.Total_Serious_Injuries && d.Total_Fatal_Injuries >=d.Total_Uninjured) {
+    if (d.Total_Fatal_Injuries > 0) {
         return "red";
-    } else if (d.Total_Serious_Injuries >= d.Total_Uninjured && d.Total_Serious_Injuries >= d.Total_Fatal_Injuries) {
+    } else if (d.Total_Serious_Injuries > 0) {
         return "orange";
     } else {
         return "green";
     }
-}
+} // end getColor()
+
+document.body.addEventListener("click", function() {
+    $(".active-dot").removeClass("active-dot");
+}, true);
