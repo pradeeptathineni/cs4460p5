@@ -120,11 +120,11 @@ function ready(error, mapData, portData, planeData) {
             if (d.Longitude != "" && d.Latitude != "") {
                 coords = projection([d.Longitude, d.Latitude]);
             } else if (d.Airport_Code != "") {
-                if (airports_IATA[d.Airport_Code]) {
-                    var port = airports_IATA[d.Airport_Code];
+                if (airports_IATA[d.Airport_Code.toString()]) {
+                    var port = airports_IATA[d.Airport_Code.toString()];
                     coords = projection([port[0], port[1]]);
-                } else if (airports_ICAO[d.Airport_Code]) {
-                    var port = airports_ICAO[d.Airport_Code];
+                } else if (airports_ICAO[d.Airport_Code.toString()]) {
+                    var port = airports_ICAO[d.Airport_Code.toString()];
                     coords = projection([port[0], port[1]]);
                 } else {
                     coords = projection([d.Longitude, d.Latitude]);
@@ -138,11 +138,11 @@ function ready(error, mapData, portData, planeData) {
             if (d.Longitude != "" && d.Latitude != "") {
                 coords = projection([d.Longitude, d.Latitude]);
             } else if (d.Airport_Code != "") {
-                if (airports_IATA[d.Airport_Code]) {
-                    var port = airports_IATA[d.Airport_Code];
+                if (airports_IATA[d.Airport_Code.toString()]) {
+                    var port = airports_IATA[d.Airport_Code.toString()];
                     coords = projection([port[0], port[1]]);
-                } else if (airports_ICAO[d.Airport_Code]) {
-                    var port = airports_ICAO[d.Airport_Code];
+                } else if (airports_ICAO[d.Airport_Code.toString()]) {
+                    var port = airports_ICAO[d.Airport_Code.toString()];
                     coords = projection([port[0], port[1]]);
                 } else {
                     coords = projection([d.Longitude, d.Latitude]);
@@ -251,10 +251,25 @@ function incidentClick(d, i) {
         .attr("x", 15)
         .attr("y", 17*y)
         .text("Schedule: " + d.Schedule);
-    details.append("text")
+
+    var weatherMeaning = ""
+    if (d.Weather_Condition === "UNK" || d.Weather_Condition === "") {
+        weatherMeaning = "unkown";
+        details.append("text")
         .attr("x", 15)
         .attr("y", 18*y)
-        .text("Weather Condition: " + d.Weather_Condition);
+        .text("Weather Condition: " + weatherMeaning);
+    }  else {
+        if (d.Weather_Condition === "IMC") {
+            weatherMeaning = "cloudy/bad";
+        } else if (d.Weather_Condition === "VMC") {
+            weatherMeaning = "sun/clear";
+        }
+        details.append("text")
+            .attr("x", 15)
+            .attr("y", 18*y)
+            .text("Weather Condition: " + d.Weather_Condition + " meaning " + weatherMeaning);
+    }
     details.append("text")
         .attr("x", 15)
         .attr("y", 19*y)
