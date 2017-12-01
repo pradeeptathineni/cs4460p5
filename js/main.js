@@ -65,8 +65,6 @@ function ready(error, mapData, portData, planeData) {
         }
     });
 
-
-
     var countries = topojson.feature(mapData, mapData.objects.countries).features;
 
     var projection = d3.geoMercator()
@@ -158,10 +156,6 @@ function ready(error, mapData, portData, planeData) {
         }).on("mouseover", incidentMouseover)
         .on("mouseout", incidentMouseout)
         .on("click", incidentClick);
-
-        d3.selectAll("circle")
-            .filter(function(d){return d.Latitude == "" && d.Longitude == "" && d.Airport_Code == "" && d.Airport_Name == ""; })
-            .remove();
 }
 
 function incidentMouseover(d, i) {
@@ -239,7 +233,7 @@ function incidentClick(d, i) {
     $(".incident-dot").removeClass("active-dot");
     $(this).addClass("active-dot");
     details.selectAll("text").remove();
-    var y = 25;
+    var y = 20;
     details.append("a")
         .attr("target", "_blank")
         .attr("href", "https://www.google.com/search?q=ntsb%20" + d.Accident_Number)
@@ -331,10 +325,50 @@ function incidentClick(d, i) {
         .text("Broad Phase of Flight: " + d.Broad_Phase_of_Flight);
     details.selectAll("text")
         .attr("class", "info-line");
+
+    if (d.Broad_Phase_of_Flight == "" || d.Broad_Phase_of_Flight == "UNKNOWN" || d.Broad_Phase_of_Flight == "OTHER" || d.Broad_Phase_of_Flight == "MANEUVERING"){
+        details.append("text").attr("x", 11).attr("y", 20*y).text("Phase of Flight: N/A");
+        details.append("svg:image")
+            .attr('x', 10)
+            .attr('y', 20*y)
+            .attr('width', 144)
+            .attr('height', 121)
+            .attr("xlink:href", "resources/idk.png")
+    } else {
+        details.append("text").attr("x", 11).attr("y", 20*y).text("Phase of Flight: " + d.Broad_Phase_of_Flight);
+        if (d.Broad_Phase_of_Flight == "STANDING") { //stand
+            details.append("svg:image")
+                .attr('x', 10)
+                .attr('y', 20*y)
+                .attr('width', 144)
+                .attr('height', 121)
+                .attr("xlink:href", "resources/stand.png")
+        } else if (d.Broad_Phase_of_Flight == "TAKEOFF" || d.Broad_Phase_of_Flight == "CLIMB") { //up
+            details.append("svg:image")
+                .attr('x', 10)
+                .attr('y', 20*y)
+                .attr('width', 144)
+                .attr('height', 121)
+                .attr("xlink:href", "resources/up.png")
+        } else if (d.Broad_Phase_of_Flight == "CRUISE") { //cruise
+            details.append("svg:image")
+                .attr('x', 10)
+                .attr('y', 20*y)
+                .attr('width', 144)
+                .attr('height', 121)
+                .attr("xlink:href", "resources/cruise.png")
+        } else if (d.Broad_Phase_of_Flight == "TAXI" || d.Broad_Phase_of_Flight == "LANDING" || d.Broad_Phase_of_Flight == "DECENT" || d.Broad_Phase_of_Flight == "APPROACH") { //down
+            details.append("svg:image")
+                .attr('x', 10)
+                .attr('y', 20*y)
+                .attr('width', 144)
+                .attr('height', 121)
+                .attr("xlink:href", "resources/down.png")
+        }
+    }
 }
 
 function updateYear(year1, year2) {
-    console.log(year1, year2);
     geo.select("g").selectAll("circle").filter(function(d){
         var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
         var a = parse.getFullYear();
@@ -343,13 +377,14 @@ function updateYear(year1, year2) {
         }
     }).attr("fill-opacity", 1);
 
-    geo.select("g").selectAll("circle").filter(function(d){
+    geo.select("g").selectAll("circle.incident-dot").filter(function(d){
         var parse = d3.timeParse("%m/%d/%y")(d.Event_Date);
         var a = parse.getFullYear();
         if (!(year1 <= a && a <= year2)) {
             return true;
         }
-    }).attr("fill-opacity", .2);
+    })//.attr("fill", "#000000");
+    .attr("fill-opacity", .5);
 }
 
 function brushstart(cell) {
