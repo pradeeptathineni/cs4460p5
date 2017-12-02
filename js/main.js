@@ -25,11 +25,17 @@ var saveClick;
 
 $("#years-slider").slider({
     tooltip: "always",
-    tooltip_position: "bottom",
+    tooltip_position: "bottom"
+}).on("change", function(event, value) {
+    updateYear(event.value.newValue[0],event.value.newValue[1]);
 });
 
-$("#years-slider").on("change", function(event, value){
-    updateYear(event.value.newValue[0],event.value.newValue[1])
+$("#opacity-slider").slider({
+    tooltip: "always",
+    tooltip_position: "bottom"
+}).on("change", function(event, value) {
+    geo.selectAll(".incident-dot")
+        .attr("fill-opacity", event.value.newValue);
 });
 
 d3.queue()
@@ -86,13 +92,8 @@ function ready(error, mapData, portData, planeData) {
             .domain([1,maxZoom])
             .range([maxRadius,0.3]);
 
-        var fillOpacity = d3.scaleLinear()
-            .domain([1,maxZoom])
-            .range([0.5,1]);
-
         g.selectAll(".incident-dot")
-            .attr("r", radius(evt.k))
-            .attr("fill-opacity", fillOpacity(evt.k));
+            .attr("r", radius(evt.k));
     }
     g.call(d3.zoom()
         .scaleExtent([1, maxZoom])
@@ -114,6 +115,7 @@ function ready(error, mapData, portData, planeData) {
         .attr("fill", function(d) {
             return getColor(d);
         })
+        .attr("fill-opacity", 0.5)
         .attr("r", maxRadius)
         .attr("cx", function(d) {
             var coords;
@@ -170,7 +172,7 @@ function incidentClick(d, i) {
     $(this).addClass("active-dot");
     saveClick = d;
     callClick(d);
-    
+
 } // end incidentClick()
 
 function callClick(d) {

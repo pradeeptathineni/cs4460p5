@@ -14,17 +14,24 @@
         </svg>
         <svg id="details-area" width="310" height="640" style="">
         </svg>
-        <p>Zoom with scroll-wheel or double-click | Click and drag to pan | Click a dot to view incident report</p>
-        <br>
-        <p>Note: Some major islands are not shown.</p>
+        <p>Zoom with scroll-wheel or double-click | Click and drag to pan | Click a dot to view incident report | Change the dot opacity below</p>
+        <div id="opacityslide" style="float:right;">
+            <label for="opacity-slider" style="margin-right:6px;">Opacity: 0.1</label>
+            <input id="opacity-slider" type="text" data-slider-min="0.1" data-slider-max="1" data-slider-step="0.01" data-slider-value="0.5" style="width: 300px;"/>
+            <label for="opacity-slider" style="margin-left:6px;">1</label>
+        </div>
+        <p style="text-align:left;">Note: Some major islands are not shown.</p>
+
     </div>
 
     <div style="padding: 4px 60px;">
         <label for="years-slider" style="margin-right:6px;">1995</label>
         <input id="years-slider" type="text" data-slider-min="1995" data-slider-max="2016" data-slider-step="1" data-slider-value="[1995,2016]" style="width: 800px;"/>
-        <label for="years-slider"  style="margin-left:6px;">2016</label>
+        <label for="years-slider" style="margin-left:6px;">2016</label>
         <p>Displaying Time Range: <span class="slider-time">1995</span> - <span class="slider-time2">2016</span> </p>
-    </div >
+    </div>
+
+
 
 
 </body>

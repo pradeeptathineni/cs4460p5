@@ -56,7 +56,6 @@ p {
 }
 
 .incident-dot {
-    fill-opacity: 0.2;
     stroke: #cccccc;
     stroke-width: 0.1;
 }
