@@ -543,7 +543,3 @@ function detailsBox(d) {
         return valueColors[i];
     }).attr("transform", "translate(220,"+(25.5*y + 20*valueColors.length)+")");
 }
-
-document.body.addEventListener("click", function() {
-    $(".active-dot").removeClass("active-dot");
-}, true);
