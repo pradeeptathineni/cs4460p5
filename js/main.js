@@ -61,7 +61,7 @@ function ready(error, mapData, portData, planeData) {
 
     var countries = topojson.feature(mapData, mapData.objects.countries).features;
 
-    var projection = d3.geoMercator()
+    projection = d3.geoMercator()
         .translate([svgWidth / 2, svgHeight / 2])
         .scale(fullScale);
 
@@ -148,7 +148,7 @@ function ready(error, mapData, portData, planeData) {
         }).on("mouseover", incidentMouseover)
         .on("mouseout", incidentMouseout)
         .on("click", incidentClick);
-    console.log("All appended dots:",dots._groups);
+    //console.log("All appended dots:",dots._groups);
 } // end ready()
 
 function incidentMouseover(d, i) {
@@ -410,26 +410,62 @@ function incidentClick(d, i) {
         return valueColors[i];
     }).attr("transform", "translate(220,"+(25.5*y + 20*valueColors.length)+")");
 
-    getDotsNearClick();
+    getDotsNearClick(d);
 } // end incidentClick()
 
-function getDotsNearClick() {
+function getDotsNearClick(selectedDot) {
     var clicked = $(this);
+    var selecteDotCoords;
+            if (selectedDot.Longitude != "" && selectedDot.Latitude != "") {
+                selecteDotCoords = projection([selectedDot.Longitude, selectedDot.Latitude]);
+            } else if (selectedDot.Airport_Code != "") {
+                if (airports_IATA[selectedDot.Airport_Code.toString()]) {
+                    var port = airports_IATA[selectedDot.Airport_Code.toString()];
+                    selecteDotCoords = projection([port[0], port[1]]);
+                } else if (airports_ICAO[selectedDot.Airport_Code.toString()]) {
+                    var port = airports_ICAO[selectedDot.Airport_Code.toString()];
+                    selecteDotCoords = projection([port[0], port[1]]);
+                } else {
+                    selecteDotCoords = projection([selectedDot.Longitude, selectedDot.Latitude]);
+                }
+            } else {
+                selecteDotCoords = projection([selectedDot.Longitude, selectedDot.Latitude]);
+            }
+
     var radius = clicked.attr("r");
     var nearbyDots = geo.select("g")
         .selectAll("circle.incident-dot")
         .filter(function(d){
-            if ($(this).attr("display") != "none") {
+            var coords;
+            if (d.Longitude != "" && d.Latitude != "") {
+                coords = projection([d.Longitude, d.Latitude]);
+            } else if (d.Airport_Code != "") {
+                if (airports_IATA[d.Airport_Code.toString()]) {
+                    var port = airports_IATA[d.Airport_Code.toString()];
+                    coords = projection([port[0], port[1]]);
+                } else if (airports_ICAO[d.Airport_Code.toString()]) {
+                    var port = airports_ICAO[d.Airport_Code.toString()];
+                    coords = projection([port[0], port[1]]);
+                } else {
+                    coords = projection([d.Longitude, d.Latitude]);
+                }
+            } else {
+                coords = projection([d.Longitude, d.Latitude]);
+            }
+            //return coords[0];
+
+            // if ($(this).attr("display") != "none") {
                 // returning d here gets the non-hidden elements correctly
                 // but the following if statement returns nothing
-                if ((Math.abs($(this).attr("cx") - clicked.attr("cx")) <= 2*radius)
-                        && (Math.abs($(this).attr("cy") - clicked.attr("cy")) <= 2*radius)) {
+                if ((Math.abs(coords[0] - selecteDotCoords[0]) <= .01)
+                        || (Math.abs(coords[1] - selecteDotCoords[1]) <= .01)) {
+                        console.log(d);
                         return d;
                 }
                 // We must check cx and cy against the clicked dot
                 // if absolutevalue(someDot-clickedDotPos) <= clickedDot diameter
                 // then we return d
-            }
+            // }
         });
     console.log("Dots nearby click:", nearbyDots._groups);
 } // end getDotsNearClick()
