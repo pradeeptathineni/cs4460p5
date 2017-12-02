@@ -12,14 +12,17 @@ var fullScale = svgWidth / 2 / Math.PI;
 var airports_IATA = {};
 var airports_ICAO = {};
 
+// Easy switch vars
 var maxZoom = 20;
 var maxRadius = 4;
 var minStrokeWidth = 0.05;
+var fatalColor = "#f44336";
+var injuredColor = "#ff9800";
+var uninjuredColor = "#4caf50";
 
 $("#years-slider").slider({
     tooltip: "always",
     tooltip_position: "bottom",
-
 });
 
 $("#years-slider").on("change", function(event, value){
@@ -58,7 +61,7 @@ function ready(error, mapData, portData, planeData) {
             return d;
         }
     });
-
+    console.log(mapData);
     var countries = topojson.feature(mapData, mapData.objects.countries).features;
 
     projection = d3.geoMercator()
@@ -95,7 +98,7 @@ function ready(error, mapData, portData, planeData) {
     var path = d3.geoPath()
         .projection(projection);
 
-    var countries = g.selectAll(".country")
+    var map = g.selectAll(".country")
         .data(countries)
         .enter().append("path")
         .attr("class", "country")
@@ -363,7 +366,7 @@ function incidentClick(d, i) {
     }
 
     //pie legend
-    var valueColors = ["red","orange","green"];
+    var valueColors = [fatalColor,injuredColor,uninjuredColor];
     for (i = 0; i < valueColors.length; i++) {
         details.append("rect")
             .attr("x", 58)
@@ -492,11 +495,11 @@ function updateYear(year1, year2) {
 
 function getColor(d) {
     if (d.Total_Fatal_Injuries > 0) {
-        return "red";
+        return fatalColor;
     } else if (d.Total_Serious_Injuries > 0) {
-        return "orange";
+        return injuredColor;
     } else {
-        return "green";
+        return uninjuredColor;
     }
 } // end getColor()
 
