@@ -50,19 +50,16 @@ p {
     stroke-width: 0.5;
 }
 
-.country:hover {
-    fill: #e8e8e8;
-
-}
-
 .incident-dot {
-    stroke: #cccccc;
+    stroke: #ccc;
     stroke-width: 0.1;
 }
 
 .incident-dot:hover, .active-dot {
+    fill: #efefef;
     fill-opacity: 1;
     stroke: black;
+    stroke-width: 0.3;
 }
 
 .active-dot::after {
