@@ -61,7 +61,7 @@ function ready(error, mapData, portData, planeData) {
             return d;
         }
     });
-    console.log(mapData);
+
     var countries = topojson.feature(mapData, mapData.objects.countries).features;
 
     projection = d3.geoMercator()
@@ -159,8 +159,7 @@ function incidentMouseover(d, i) {
 }
 
 function incidentMouseout(d, i) {
-    // details.selectAll("*").remove();
-    // d3.select("#t"+d.Accident_Number).remove();
+
 }
 
 function incidentClick(d, i) {
