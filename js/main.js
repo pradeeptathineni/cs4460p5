@@ -164,6 +164,9 @@ function incidentMouseout(d, i) {
 }
 
 function incidentClick(d, i) {
+    var nearbyData = getDotsNearClick(d);
+    console.log(nearbyData);
+
     $(".incident-dot").removeClass("active-dot");
     $(this).addClass("active-dot");
     details.selectAll("text").remove();
@@ -413,10 +416,12 @@ function incidentClick(d, i) {
         return valueColors[i];
     }).attr("transform", "translate(220,"+(25.5*y + 20*valueColors.length)+")");
 
-    getDotsNearClick(d);
+
 } // end incidentClick()
 
 function getDotsNearClick(selectedDot) {
+    var nearbyData = [];
+    var index = 0;
     var clicked = $(this);
     var selecteDotCoords;
             if (selectedDot.Longitude != "" && selectedDot.Latitude != "") {
@@ -462,7 +467,10 @@ function getDotsNearClick(selectedDot) {
                 // but the following if statement returns nothing
                 if ((Math.abs(coords[0] - selecteDotCoords[0]) <= .01)
                         || (Math.abs(coords[1] - selecteDotCoords[1]) <= .01)) {
-                        console.log(d);
+                        // console.log(d);
+                        // nearbyData[index] = d;
+                        // index++;
+                        nearbyData.push(d);
                         return d;
                 }
                 // We must check cx and cy against the clicked dot
@@ -470,7 +478,10 @@ function getDotsNearClick(selectedDot) {
                 // then we return d
             // }
         });
-    console.log("Dots nearby click:", nearbyDots._groups);
+        return nearbyData;
+        // console.log(nearbyData);
+    // console.log("Dots nearby click:", nearbyDots._groups);
+
 } // end getDotsNearClick()
 
 function updateYear(year1, year2) {
