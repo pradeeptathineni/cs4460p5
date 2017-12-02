@@ -21,6 +21,7 @@ var injuredColor = "#ff9800";
 var uninjuredColor = "#4caf50";
 
 var groupDotsData = {};
+var saveClick;
 
 $("#years-slider").slider({
     tooltip: "always",
@@ -167,14 +168,19 @@ function incidentMouseout(d, i) {
 function incidentClick(d, i) {
     $(".incident-dot").removeClass("active-dot");
     $(this).addClass("active-dot");
+    saveClick = d;
+    callClick(d);
+    
+} // end incidentClick()
 
+function callClick(d) {
     var nearbyDots = getDotsNearClick(d);
     nearbyDots = nearbyDots._groups[0];
     var numNearby = nearbyDots.length;
     d3.map(nearbyDots, function(circle) {
         groupDotsData[circle.__data__.Accident_Number] = circle;
     });
-    console.log(groupDotsData);
+    // console.log(groupDotsData);
     if (numNearby == 1) {
         detailsBox(d);
     } else {
@@ -200,7 +206,7 @@ function incidentClick(d, i) {
                 });
         }
     }
-} // end incidentClick()
+}
 
 function getDotsNearClick(selectedDot) {
     var clicked = $(this);
@@ -269,6 +275,10 @@ function updateYear(year1, year2) {
                 return true;
             }
         }).attr("display", "none");
+    if (saveClick != null) {
+        callClick(saveClick);
+    }
+    // console.log(saveClick == null);
 } // end updateYear()
 
 function getColor(d) {
