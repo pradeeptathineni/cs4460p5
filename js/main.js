@@ -20,6 +20,8 @@ var fatalColor = "#f44336";
 var injuredColor = "#ff9800";
 var uninjuredColor = "#4caf50";
 
+var groupDotsData = {};
+
 $("#years-slider").slider({
     tooltip: "always",
     tooltip_position: "bottom",
@@ -165,14 +167,18 @@ function incidentMouseout(d, i) {
 function incidentClick(d, i) {
     $(".incident-dot").removeClass("active-dot");
     $(this).addClass("active-dot");
-    details.selectAll("text").remove();
 
     var nearbyDots = getDotsNearClick(d);
     nearbyDots = nearbyDots._groups[0];
     var numNearby = nearbyDots.length;
+    d3.map(nearbyDots, function(circle) {
+        groupDotsData[circle.__data__.Accident_Number] = circle;
+    });
+    console.log(groupDotsData);
     if (numNearby == 1) {
         detailsBox(d);
     } else {
+        details.selectAll("text").remove();
         details.selectAll("path").remove();
         details.selectAll("rect").remove();
         details.selectAll("image").remove();
@@ -184,9 +190,13 @@ function incidentClick(d, i) {
                 .attr("y", y*i + 20)
                 .attr("text-decoration", "underline")
                 .attr("cursor", "pointer")
+                .attr("id", dotData.Accident_Number)
+                .attr("fill", function() {
+                    return getColor(dotData);
+                })
                 .text("Accident Number: " + dotData.Accident_Number + " ⇗")
                 .on("click", function() {
-                    detailsBox(dotData);
+                    detailsBox(groupDotsData[$(this).attr("id")].__data__);
                 });
         }
     }
@@ -233,7 +243,9 @@ function getDotsNearClick(selectedDot) {
             }
             if ((Math.abs(coords[0] - selecteDotCoords[0]) <= .01)
                     || (Math.abs(coords[1] - selecteDotCoords[1]) <= .01)) {
+                if ($(this).attr("display") != "none"){
                     return d;
+                }
             }
         });
     return nearbyDots;
@@ -272,6 +284,7 @@ function getColor(d) {
 function detailsBox(d) {
     details.selectAll("text").remove();
     details.selectAll("path").remove();
+    details.selectAll("rect").remove();
     details.selectAll("image").remove();
     var y = 20;
     details.append("a")
