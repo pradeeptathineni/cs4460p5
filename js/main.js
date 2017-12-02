@@ -167,6 +167,113 @@ function incidentClick(d, i) {
     $(".incident-dot").removeClass("active-dot");
     $(this).addClass("active-dot");
     details.selectAll("text").remove();
+
+    var nearbyDots = getDotsNearClick(d);
+    nearbyDots = nearbyDots._groups[0];
+    var numNearby = nearbyDots.length;
+    if (numNearby == 1) {
+        detailsBox(d);
+    } else {
+        details.selectAll("path").remove();
+        details.selectAll("rect").remove();
+        details.selectAll("image").remove();
+        var y = 30;
+        for (var i = 0; i < numNearby; i++) {
+            var dotData = nearbyDots[i].__data__;
+            details.append("text")
+                .attr("x", 15)
+                .attr("y", y*i + 20)
+                .attr("text-decoration", "underline")
+                .attr("cursor", "pointer")
+                .text("Accident Number: " + dotData.Accident_Number + " ⇗")
+                .on("click", function() {
+                    detailsBox(dotData);
+                });
+        }
+    }
+} // end incidentClick()
+
+function getDotsNearClick(selectedDot) {
+    var clicked = $(this);
+    var selecteDotCoords;
+    if (selectedDot.Longitude != "" && selectedDot.Latitude != "") {
+        selecteDotCoords = projection([selectedDot.Longitude, selectedDot.Latitude]);
+    } else if (selectedDot.Airport_Code != "") {
+        if (airports_IATA[selectedDot.Airport_Code.toString()]) {
+            var port = airports_IATA[selectedDot.Airport_Code.toString()];
+            selecteDotCoords = projection([port[0], port[1]]);
+        } else if (airports_ICAO[selectedDot.Airport_Code.toString()]) {
+            var port = airports_ICAO[selectedDot.Airport_Code.toString()];
+            selecteDotCoords = projection([port[0], port[1]]);
+        } else {
+            selecteDotCoords = projection([selectedDot.Longitude, selectedDot.Latitude]);
+        }
+    } else {
+        selecteDotCoords = projection([selectedDot.Longitude, selectedDot.Latitude]);
+    }
+
+    var radius = clicked.attr("r");
+    var nearbyDots = geo.select("g")
+        .selectAll("circle.incident-dot")
+        .filter(function(d){
+            var coords;
+            if (d.Longitude != "" && d.Latitude != "") {
+                coords = projection([d.Longitude, d.Latitude]);
+            } else if (d.Airport_Code != "") {
+                if (airports_IATA[d.Airport_Code.toString()]) {
+                    var port = airports_IATA[d.Airport_Code.toString()];
+                    coords = projection([port[0], port[1]]);
+                } else if (airports_ICAO[d.Airport_Code.toString()]) {
+                    var port = airports_ICAO[d.Airport_Code.toString()];
+                    coords = projection([port[0], port[1]]);
+                } else {
+                    coords = projection([d.Longitude, d.Latitude]);
+                }
+            } else {
+                coords = projection([d.Longitude, d.Latitude]);
+            }
+            if ((Math.abs(coords[0] - selecteDotCoords[0]) <= .01)
+                    || (Math.abs(coords[1] - selecteDotCoords[1]) <= .01)) {
+                    return d;
+            }
+        });
+    return nearbyDots;
+} // end getDotsNearClick()
+
+function updateYear(year1, year2) {
+    $('.slider-time').html(year1);
+    $('.slider-time2').html(year2);
+    geo.select("g")
+        .selectAll("circle")
+        .filter(function(d){
+            if (year1 <= d.Year && d.Year <= year2) {
+                return true;
+            }
+        }).attr("display", "inline");
+
+    geo.select("g")
+        .selectAll("circle.incident-dot")
+        .filter(function(d){
+            if (!(year1 <= d.Year && d.Year <= year2)) {
+                return true;
+            }
+        }).attr("display", "none");
+} // end updateYear()
+
+function getColor(d) {
+    if (d.Total_Fatal_Injuries > 0) {
+        return fatalColor;
+    } else if (d.Total_Serious_Injuries > 0) {
+        return injuredColor;
+    } else {
+        return uninjuredColor;
+    }
+} // end getColor()
+
+function detailsBox(d) {
+    details.selectAll("text").remove();
+    details.selectAll("path").remove();
+    details.selectAll("image").remove();
     var y = 20;
     details.append("a")
         .attr("target", "_blank")
@@ -403,7 +510,6 @@ function incidentClick(d, i) {
         ];
     }
 
-    details.selectAll("path").remove();
     var path = details.selectAll('path')
         .data(pie(pieData))
         .enter()
@@ -412,96 +518,7 @@ function incidentClick(d, i) {
         .attr('fill', function(d, i) {
         return valueColors[i];
     }).attr("transform", "translate(220,"+(25.5*y + 20*valueColors.length)+")");
-
-    getDotsNearClick(d);
-} // end incidentClick()
-
-function getDotsNearClick(selectedDot) {
-    var clicked = $(this);
-    var selecteDotCoords;
-            if (selectedDot.Longitude != "" && selectedDot.Latitude != "") {
-                selecteDotCoords = projection([selectedDot.Longitude, selectedDot.Latitude]);
-            } else if (selectedDot.Airport_Code != "") {
-                if (airports_IATA[selectedDot.Airport_Code.toString()]) {
-                    var port = airports_IATA[selectedDot.Airport_Code.toString()];
-                    selecteDotCoords = projection([port[0], port[1]]);
-                } else if (airports_ICAO[selectedDot.Airport_Code.toString()]) {
-                    var port = airports_ICAO[selectedDot.Airport_Code.toString()];
-                    selecteDotCoords = projection([port[0], port[1]]);
-                } else {
-                    selecteDotCoords = projection([selectedDot.Longitude, selectedDot.Latitude]);
-                }
-            } else {
-                selecteDotCoords = projection([selectedDot.Longitude, selectedDot.Latitude]);
-            }
-
-    var radius = clicked.attr("r");
-    var nearbyDots = geo.select("g")
-        .selectAll("circle.incident-dot")
-        .filter(function(d){
-            var coords;
-            if (d.Longitude != "" && d.Latitude != "") {
-                coords = projection([d.Longitude, d.Latitude]);
-            } else if (d.Airport_Code != "") {
-                if (airports_IATA[d.Airport_Code.toString()]) {
-                    var port = airports_IATA[d.Airport_Code.toString()];
-                    coords = projection([port[0], port[1]]);
-                } else if (airports_ICAO[d.Airport_Code.toString()]) {
-                    var port = airports_ICAO[d.Airport_Code.toString()];
-                    coords = projection([port[0], port[1]]);
-                } else {
-                    coords = projection([d.Longitude, d.Latitude]);
-                }
-            } else {
-                coords = projection([d.Longitude, d.Latitude]);
-            }
-            //return coords[0];
-
-            // if ($(this).attr("display") != "none") {
-                // returning d here gets the non-hidden elements correctly
-                // but the following if statement returns nothing
-                if ((Math.abs(coords[0] - selecteDotCoords[0]) <= .01)
-                        || (Math.abs(coords[1] - selecteDotCoords[1]) <= .01)) {
-                        console.log(d);
-                        return d;
-                }
-                // We must check cx and cy against the clicked dot
-                // if absolutevalue(someDot-clickedDotPos) <= clickedDot diameter
-                // then we return d
-            // }
-        });
-    console.log("Dots nearby click:", nearbyDots._groups);
-} // end getDotsNearClick()
-
-function updateYear(year1, year2) {
-    $('.slider-time').html(year1);
-    $('.slider-time2').html(year2);
-    geo.select("g")
-        .selectAll("circle")
-        .filter(function(d){
-            if (year1 <= d.Year && d.Year <= year2) {
-                return true;
-            }
-        }).attr("display", "inline");
-
-    geo.select("g")
-        .selectAll("circle.incident-dot")
-        .filter(function(d){
-            if (!(year1 <= d.Year && d.Year <= year2)) {
-                return true;
-            }
-        }).attr("display", "none");
-} // end updateYear()
-
-function getColor(d) {
-    if (d.Total_Fatal_Injuries > 0) {
-        return fatalColor;
-    } else if (d.Total_Serious_Injuries > 0) {
-        return injuredColor;
-    } else {
-        return uninjuredColor;
-    }
-} // end getColor()
+}
 
 document.body.addEventListener("click", function() {
     $(".active-dot").removeClass("active-dot");
