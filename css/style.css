@@ -10,6 +10,15 @@
     font-size: 10pt;
 }
 
+h5 {
+    text-align: left;
+    font-weight: 100;
+}
+
+p {
+    margin: 0;
+}
+
 #geo-area, #details-area, #chart-area {
     background-color: lightsteelblue;
     border: 1px solid #666;
