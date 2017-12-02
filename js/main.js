@@ -27,6 +27,9 @@ $("#years-slider").slider({
     tooltip: "always",
     tooltip_position: "bottom"
 }).on("change", function(event, value) {
+    if (document.getElementById("lock").checked) {
+        console.log("checked");
+    }
     updateYear(event.value.newValue[0],event.value.newValue[1]);
 });
 

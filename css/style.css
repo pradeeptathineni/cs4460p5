@@ -76,3 +76,8 @@ p {
 .slider-selection {
     background: lightsteelblue;
 }
+
+input#lock {
+    display: inline-block;
+    margin-left: 5px;
+}
